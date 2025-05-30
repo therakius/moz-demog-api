@@ -1,0 +1,73 @@
+@startuml moz_database
+skinparam {
+    Nodesep 80
+    Ranksep 80
+    Linetype ortho
+}
+
+skinparam entity {
+    BackgroundColor LightBlue
+    FontSize 14
+    ArrowThickness 1
+}
+
+entity year {
+    + Id: serial [pk]
+    --
+    + name: integer
+    + head_of_state: text
+}
+
+entity country_data {
+    + Id: serial [pk]
+    --
+    + area_in_sqkm: integer
+    + capital_city: text
+    + official_labguage: text
+    + independence_date: database
+    --
+    + year_id: integer [FK] references year(id)
+}
+
+entity provinces {
+   + id: serial [pk]
+   --
+   + province_name: text
+   + area_in_sqkm: integer
+   + population_density: integer
+   --
+   + country_data_id: integer [FK] references country_data(id)
+   + year_id: integer [FK] references year(id)
+}
+
+entity population_per_thousand{
+    + id: serial [pk]
+    --
+    + total: integer
+    + male_population: integer
+    + female_population: integer
+    --
+    + province_id: integer [FK] references provinces(id)
+}
+
+entity population_percentual_structure {
+    + id: serial [pk]
+    + total: integer
+    + male_population: integer
+    +female_population: integer
+    --
+    + province_id: integer [FK] references provinces(id)
+}
+
+
+'relashionships:
+
+year  --{ country_data
+country_data --{ provinces
+provinces --{ population_per_thousand
+provinces --{ population_percentual_structure
+year  --{ provinces
+
+
+
+@enduml
