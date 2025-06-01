@@ -25,8 +25,6 @@ entity country_data {
     + capital_city: text
     + official_language: text
     + independence_date: date
-    --
-    + year_id: integer [FK] references year(id)
 }
 
 entity provinces {
@@ -54,7 +52,7 @@ entity population_percentual_structure {
     + id: serial [pk]
     + total: integer
     + male_population: integer
-    +female_population: integer
+    + female_population: integer
     --
     + province_id: integer [FK] references provinces(id)
 }
@@ -76,31 +74,25 @@ entity country_pop_indicators {
 }
 
 entity dependency_rate {
-    + id: serial [pk]
+    + year_id: integer [PK] references year(id)
     --
     + total: numeric (4, 1)
     + young: numeric (4, 1)
-    --
-    + year_id: integer [FK] references year(id)
 }
 
 entity life_expectancy {
     + year_id: integer [PK] references year(id)
     --
-    + male: numeric (4, 1)
-    + female: numeric (4, 1)
+    + male_life_expectancy: numeric (4, 1)
+    + female_life_expectancy: numeric (4, 1)
 }
 
 'relashionships:
-
-year  --{ country_data
-country_data --{ provinces
+year --{ provinces
 provinces --{ population_per_thousand
 provinces --{ population_percentual_structure
 year -- life_expectancy
 year --{ country_pop_indicators
 year -- dependency_rate
-
-
 
 @enduml
