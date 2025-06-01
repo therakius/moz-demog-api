@@ -23,8 +23,8 @@ entity country_data {
     --
     + area_in_sqkm: integer
     + capital_city: text
-    + official_labguage: text
-    + independence_date: database
+    + official_language: text
+    + independence_date: date
     --
     + year_id: integer [FK] references year(id)
 }
@@ -60,13 +60,46 @@ entity population_percentual_structure {
 }
 
 
+entity country_pop_indicators {
+    + id: serial [pk]
+    --
+    + total: integer
+    + male: integer
+    + female: integer
+    + urban_percentual: numeric (4, 1)
+    + sex_ratio: integer
+    + gross_mortality_rate: numeric (4, 1)
+    + gross_birth_rate: numeric (4, 1)
+    + growth_rate: numeric (4, 1)
+    --
+    + year_id: integer [FK] references year(id)
+}
+
+entity dependency_rate {
+    + id: serial [pk]
+    --
+    + total: numeric (4, 1)
+    + young: numeric (4, 1)
+    --
+    + year_id: integer [FK] references year(id)
+}
+
+entity life_expectancy {
+    + year_id: integer [PK] references year(id)
+    --
+    + male: numeric (4, 1)
+    + female: numeric (4, 1)
+}
+
 'relashionships:
 
 year  --{ country_data
 country_data --{ provinces
 provinces --{ population_per_thousand
 provinces --{ population_percentual_structure
-year  --{ provinces
+year -- life_expectancy
+year --{ country_pop_indicators
+year -- dependency_rate
 
 
 
