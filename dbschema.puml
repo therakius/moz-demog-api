@@ -34,16 +34,15 @@ entity provinces {
    + area_in_sqkm: integer
    + population_density: integer
    --
-   + country_data_id: integer [FK] references country_data(id)
    + year_id: integer [FK] references year(id)
 }
 
 entity population_per_thousand{
     + id: serial [pk]
     --
-    + total: integer
-    + male_population: integer
-    + female_population: integer
+    + total: numeric(7,1)
+    + male_population: numeric(7,1)
+    + female_population: numeric (7,1)
     --
     + province_id: integer [FK] references provinces(id)
 }
@@ -64,10 +63,10 @@ entity country_pop_indicators {
     + total: integer
     + male: integer
     + female: integer
-    + urban_percentual: numeric (4, 1)
-    + sex_ratio: integer
+    + urban_percentual: numeric (3,1)
+    + sex_ratio: numeric(3,1)
     + gross_mortality_rate: numeric (4, 1)
-    + gross_birth_rate: numeric (4, 1)
+    + gross_birth_rate: numeric (3, 1)
     + growth_rate: numeric (4, 1)
     --
     + year_id: integer [FK] references year(id)
@@ -76,22 +75,22 @@ entity country_pop_indicators {
 entity dependency_rate {
     + year_id: integer [PK] references year(id)
     --
-    + total: numeric (4, 1)
-    + young: numeric (4, 1)
+    + total: numeric (3,1)
+    + young: numeric (3,1)
 }
 
-entity life_expectancy {
+entity life_expectancy_at_birth {
     + year_id: integer [PK] references year(id)
     --
-    + male_life_expectancy: numeric (4, 1)
-    + female_life_expectancy: numeric (4, 1)
+    + male_life_expectancy: numeric (3,1)
+    + female_life_expectancy: numeric (3,1)
 }
 
 'relashionships:
 year --{ provinces
 provinces --{ population_per_thousand
 provinces --{ population_percentual_structure
-year -- life_expectancy
+year -- life_expectancy_at_birth
 year --{ country_pop_indicators
 year -- dependency_rate
 
