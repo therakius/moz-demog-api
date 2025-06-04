@@ -33,9 +33,9 @@ create table population_per_thousand(
 
 create table population_percentual_structure(
     id serial primary key,
-    male_population integer,
-    female_population integer,
-    total integer,
+    male_population numeric(4, 1),
+    female_population numeric (4, 1),
+    total numeric (4, 1),
     province_id integer,
     foreign key (province_id) references provinces(id)
 );
