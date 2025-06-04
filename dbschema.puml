@@ -60,9 +60,9 @@ entity population_percentual_structure {
 entity country_pop_indicators {
     + id: serial [pk]
     --
-    + total: integer
-    + male: integer
-    + female: integer
+    + total: numeric(7, 1)
+    + male: numeric(7, 1)
+    + female: numeric(6, 1)
     + urban_percentual: numeric (3,1)
     + sex_ratio: numeric(3,1)
     + gross_mortality_rate: numeric (4, 1)
