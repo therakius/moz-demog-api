@@ -49,9 +49,9 @@ entity population_per_thousand{
 
 entity population_percentual_structure {
     + id: serial [pk]
-    + total: integer
-    + male_population: integer
-    + female_population: integer
+    + total: numeric (4, 1)
+    + male_population: numeric (4, 1)
+    + female_population: numeric (4, 1)
     --
     + province_id: integer [FK] references provinces(id)
 }
