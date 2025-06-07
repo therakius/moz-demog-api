@@ -1,7 +1,7 @@
 @startuml moz_database
 skinparam {
-    Nodesep 80
-    Ranksep 80
+    Nodesep 150
+    Ranksep 200
     Linetype ortho
 }
 
@@ -86,6 +86,14 @@ entity life_expectancy_at_birth {
     + female_life_expectancy: numeric (3,1)
 }
 
+entity infant_mortality {
+    + year_id: integer [PK] referenceces year(id)
+    --
+    + average: numeric (3, 1)
+    + male_infant_mortality: numeric (3, 1)
+    + female_infant_mortality: numeric (3, 1) 
+}
+
 'relashionships:
 year --{ provinces
 provinces --{ population_per_thousand
@@ -93,5 +101,6 @@ provinces --{ population_percentual_structure
 year -- life_expectancy_at_birth
 year --{ country_pop_indicators
 year -- dependency_rate
+year -- infant_mortality
 
 @enduml
