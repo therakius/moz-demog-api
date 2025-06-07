@@ -137,3 +137,9 @@ VALUES
 insert into infant_mortality (average_infant_mortality, male_infant_mortality, female_infant_mortality, year_id)
 values
 (63.9, 66.0, 61.8, 1);
+
+
+-- updates and fixings
+
+update life_expectancy_at_birth 
+set male_life_expectancy = 53.2, female_life_expectancy = 59.1, average_life_expectancy = 56.1 WHERE year_id = 1;
