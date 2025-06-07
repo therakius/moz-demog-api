@@ -66,6 +66,12 @@ create table life_expectancy_at_birth(
     female_life_expectancy numeric(3,1),
 );
 
+create table infant_mortality(
+    year_id integer primary key references year(id),
+    average_infant_mortality numeric(3, 1),
+    male_infant_mortality numeric(3,1),
+    female_infant_mortality numeric(3, 1)
+);
 -- Inserting data
 
 INSERT INTO year (name, head_of_state) 
@@ -127,3 +133,7 @@ VALUES
 INSERT INTO life_expectancy_at_birth (year_id, male_life_expectancy, female_life_expectancy)
 VALUES 
   (1, 53.6, 59.5);
+
+insert into infant_mortality (average_infant_mortality, male_infant_mortality, female_infant_mortality, year_id)
+values
+(63.9, 66.0, 61.8, 1);
