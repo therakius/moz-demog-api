@@ -90,7 +90,7 @@ entity life_expectancy_at_birth {
 entity infant_mortality {
     + year_id: integer [PK] referenceces year(id)
     --
-    + average: numeric (3, 1)
+    + average_infant_mortality: numeric (3, 1)
     + male_infant_mortality: numeric (3, 1)
     + female_infant_mortality: numeric (3, 1) 
 }
