@@ -82,6 +82,7 @@ entity dependency_rate {
 entity life_expectancy_at_birth {
     + year_id: integer [PK] references year(id)
     --
+    + average_life_expectancy: numeric (3,1)
     + male_life_expectancy: numeric (3,1)
     + female_life_expectancy: numeric (3,1)
 }
