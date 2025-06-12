@@ -1,0 +1,26 @@
+{
+  "name": "moz-demog-api",
+  "version": "1.0.0",
+  "description": "A public api that provides demographic data for mozambique",
+  "homepage": "https://github.com/therakius/moz-demog-api#readme",
+  "bugs": {
+    "url": "https://github.com/therakius/moz-demog-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/therakius/moz-demog-api.git"
+  },
+  "license": "ISC",
+  "author": "Gaspar Mario Chichava (therakius)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.16.0"
+  }
+}
