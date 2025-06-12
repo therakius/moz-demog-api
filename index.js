@@ -15,6 +15,8 @@ app.use(express.json())
 
 app.use("/api/provinces", provincesRoutes)
 
+app.use("/api/provinces", provincesRoutes)
+
 
 app.listen(port, ()=>{
     console.log(`listening on port ${port}`)
