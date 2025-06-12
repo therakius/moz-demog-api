@@ -137,6 +137,7 @@ dist
 
 #files
 test.puml
+steps.md
 
 #folders
 .vscode
