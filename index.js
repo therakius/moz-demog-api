@@ -6,6 +6,8 @@ import morgan from "morgan";
 
 import provincesRoutes from "./src/routes/provincesRoutes.js";
 
+import countryRoutes from "./src/routes/countryRoute.js"
+
 const port = 3000;
 const app = express();
 
@@ -16,6 +18,8 @@ app.use(express.json())
 app.use("/api/provinces", provincesRoutes)
 
 app.use("/api/provinces", provincesRoutes)
+
+app.use("/api/country", countryRoutes)
 
 
 app.listen(port, ()=>{
