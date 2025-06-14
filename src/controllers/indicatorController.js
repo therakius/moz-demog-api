@@ -46,3 +46,26 @@ export async function getPopIndicatorsPerYear(req, res) {
     }
     
 }
+
+export async function dependencyRate(req, res){
+    const query = `
+        select y.year, dr.*
+        from year y, dependency_rate dr
+    `
+
+    try {
+        const result = await db.query(
+            query
+        )
+
+        if (result.rowCount === 0){
+            return res.status(404).json({info: 'Data not found'})
+        }
+
+        res.json({data: result.rows})
+
+    } catch (error) {
+        console.error(error, error.message)
+        res.status(500).json({info: 'internal server error'})
+    }
+}
