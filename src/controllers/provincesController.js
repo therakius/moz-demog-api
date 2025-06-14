@@ -97,3 +97,22 @@ export async function getProvincesbyYear(req, res){
     }
 
 }
+
+export async function getAvailableYears(req, res) {
+
+    const query = `
+
+        select y.year from year y;
+    
+    `
+    try {
+        const result = await db.query(query)
+        console.log(result)
+        if (result.rows.length === 0) return res.status(404).json({erro: "province not found"});
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: "Internal server error"});
+    }   
+}
