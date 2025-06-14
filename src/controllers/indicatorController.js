@@ -92,3 +92,23 @@ export async function dependencyRatePerYear(req, res) {
     }
     
 }
+
+export async function lifeExpectancy(req, res){
+    const query = `
+        select y.year, leb.*
+        from year y, life_expectancy_at_birth leb
+    `
+
+    try {
+        const result = await db.query(query)
+
+        if(result.rowCount === 0) {
+            return res.status(404).json({info: 'Data not found'})
+        }
+
+        res.status(200).json({data: result.rows})
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({info: 'internal server error'})
+    }
+}
