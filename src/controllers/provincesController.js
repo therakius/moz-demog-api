@@ -18,11 +18,34 @@ export async function getProvincesByName (req, res) {
         [name]
     );
 
-        if (result.rows.length === 0) return res.status(404).json({erro: "provincia nao encontrada"});
+        if (result.rows.length === 0) return res.status(404).json({erro: "province not found"});
 
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: "Erro ao buscar provincias"});
+        res.status(500).json({error: "Internal server error"});
     }
+}
+
+export async function percentualStructureByProvinceName(req, res) {
+    const name = req.params.name
+    const query = `
+        select p.province_name, pps.male_population, pps.female_population, total as average
+        from provinces p, population_percentual_structure pps
+        where p.id = pps.province_id
+        and p.province_name = $1;
+    `
+
+    try {
+        const result = await db.query(query, [name])
+        
+        if (result.rows.length === 0) return res.status(404).json({erro: "province not found"});
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: "Internal server error"});
+    }
+
+    
 }
