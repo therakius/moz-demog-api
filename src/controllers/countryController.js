@@ -195,10 +195,11 @@ export async function getCountryDataPerYear(req, res) {
         const result = await db.query(query, [year])
 
         if (result.rowCount === 0){
-            res.status(404).json({info: "Data not found"})
+            return res.status(404).json({info: "Data not found"})
         }
 
         res.json({data: result.rows[0]})
+
     } catch (error) {
         console.log(error)
         res.status(500).json({erro: "Internal server error"})
