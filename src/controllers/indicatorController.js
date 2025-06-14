@@ -112,3 +112,26 @@ export async function lifeExpectancy(req, res){
         res.status(500).json({info: 'internal server error'})
     }
 }
+
+export async function lifeExpectancyPerYear(req, res) {
+
+    const year = req.params.year
+    const query = `
+        select y.year, leb.*
+        from year y, life_expectancy_at_birth leb
+        where y.year = $1
+    `
+    try {
+        const result = await db.query(query, [year])
+
+        if(result.rowCount === 0) {
+            return res.status(404).json({info: 'Data not found'})
+        }
+
+        res.status(200).json({data: result.rows})
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({info: 'internal server error'})
+    }
+}
