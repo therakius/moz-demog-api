@@ -143,3 +143,11 @@ values
 
 update life_expectancy_at_birth 
 set male_life_expectancy = 53.2, female_life_expectancy = 59.1, average_life_expectancy = 56.1 WHERE year_id = 1;
+
+alter table year rename column name to year;
+
+ALTER TABLE country_data RENAME COLUMN area_in_sqkm TO total_area_sqkm;
+
+ALTER TABLE population_per_thousand RENAME COLUMN total TO per_thousand_total;
+ALTER TABLE population_per_thousand RENAME COLUMN male_population TO per_thousand_male;
+ALTER TABLE population_per_thousand RENAME COLUMN female_population TO per_thousand_female;
