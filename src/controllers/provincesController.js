@@ -49,3 +49,27 @@ export async function percentualStructureByProvinceName(req, res) {
 
     
 }
+
+export async function perThousandByProvinceName(req, res) {
+    const name = req.params.name
+    const query = `
+        select p.province_name, ppt.per_thousand_male, ppt.per_thousand_female, ppt.per_thousand_total as total
+        from provinces p, population_per_thousand ppt
+        where p.id = ppt.province_id
+        and p.province_name = $1
+        ;
+    `
+
+    try {
+        const result = await db.query(query, [name])
+        
+        if (result.rows.length === 0) return res.status(404).json({erro: "province not found"});
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: "Internal server error"});
+    }
+
+    
+}
