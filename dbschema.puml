@@ -14,14 +14,14 @@ skinparam entity {
 entity year {
     + Id: serial [pk]
     --
-    + name: integer
-    + head_of_state: text
+    + year: integer
+    + president: text
 }
 
 entity country_data {
     + Id: serial [pk]
     --
-    + area_in_sqkm: integer
+    + total_area_in_sqkm: integer
     + capital_city: text
     + official_language: text
     + independence_date: date
@@ -40,18 +40,18 @@ entity provinces {
 entity population_per_thousand{
     + id: serial [pk]
     --
-    + total: numeric(7,1)
-    + male_population: numeric(7,1)
-    + female_population: numeric (7,1)
+    + per_thousand_total: numeric(7,1)
+    + per_thousand_male: numeric(7,1)
+    + per_thousand_female: numeric (7,1)
     --
     + province_id: integer [FK] references provinces(id)
 }
 
 entity population_percentual_structure {
     + id: serial [pk]
-    + total: numeric (4, 1)
-    + male_population: numeric (4, 1)
-    + female_population: numeric (4, 1)
+    + percentual_total: numeric (4, 1)
+    + percentual_male numeric (4, 1)
+    + percentual_female: numeric (4, 1)
     --
     + province_id: integer [FK] references provinces(id)
 }
@@ -60,9 +60,9 @@ entity population_percentual_structure {
 entity country_pop_indicators {
     + id: serial [pk]
     --
-    + total: numeric(7, 1)
-    + male: numeric(7, 1)
-    + female: numeric(6, 1)
+    + total_population: numeric(7, 1)
+    + male_population: numeric(7, 1)
+    + female_population: numeric(6, 1)
     + urban_percentual: numeric (3,1)
     + sex_ratio: numeric(3,1)
     + gross_mortality_rate: numeric (4, 1)
