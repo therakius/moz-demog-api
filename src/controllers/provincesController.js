@@ -73,3 +73,27 @@ export async function perThousandByProvinceName(req, res) {
 
     
 }
+
+export async function getProvincesbyYear(req, res){
+    const year = req.params.year;
+
+    const query = `
+        select y.year, p.*
+        from year y, provinces p
+        where y.year = $1
+        and y.id = p.year_id;
+    `
+
+
+    try {
+        const result = await db.query(query, [year])
+        console.log(result)
+        if (result.rows.length === 0) return res.status(404).json({erro: "province not found"});
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: "Internal server error"});
+    }
+
+}
