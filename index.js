@@ -16,10 +16,7 @@ app.use(express.json())
 
 
 app.use("/api/provinces", provincesRoutes)
-
-app.use("/api/provinces", provincesRoutes)
-
-app.use("/api/country/all", countryRoutes)
+app.use("/api/country", countryRoutes)
 
 
 app.listen(port, ()=>{

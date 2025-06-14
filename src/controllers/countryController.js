@@ -85,6 +85,28 @@ export async function getAllCountryData (req, res) {
         res.json(data);
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: "Erro ao buscar dados do pais"});
+        res.status(500).json({error: "Internal error."});
+    }
+}
+
+export async function getCountryData(req, res){
+
+    const query = `
+
+        select cd.*, y.head_of_state
+        from year y, country_data cd;
+    
+    `
+
+    try {
+        const result = await db.query(query)
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({erro: "Data not found"})
+        }
+
+        res.json({data: result.rows[0]})
+    } catch (error) {
+        res.status(500).json({erro: "Unavailable information"})
     }
 }
