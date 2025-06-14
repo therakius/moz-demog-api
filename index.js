@@ -19,7 +19,7 @@ app.use("/api/provinces", provincesRoutes)
 
 app.use("/api/provinces", provincesRoutes)
 
-app.use("/api/country", countryRoutes)
+app.use("/api/country/all", countryRoutes)
 
 
 app.listen(port, ()=>{

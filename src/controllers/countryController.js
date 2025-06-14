@@ -1,6 +1,6 @@
 import db from "../models/db.js";
 
-export async function getCountryData (req, res) {
+export async function getAllCountryData (req, res) {
     const query = `
             select json_build_object(
                 'country_information_year', (

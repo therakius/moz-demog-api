@@ -1,8 +1,8 @@
 import express from "express"
-import {getCountryData} from "../controllers/countryController.js";
+import {getAllCountryData} from "../controllers/countryController.js";
 
 const router = express.Router();
 
-router.get("/", getCountryData)
+router.get("/", getAllCountryData)
 
 export default router;
