@@ -171,6 +171,10 @@ SET data_state = CASE
     ELSE 'projected'
 END
 
+alter table country_pop_indicators
+add median_age numeric(3, 1);
+select * from country_pop_indicators;
+
 --- missing insertions
 
 

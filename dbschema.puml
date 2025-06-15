@@ -69,6 +69,7 @@ entity country_pop_indicators {
     + gross_mortality_rate: numeric (4, 1)
     + gross_birth_rate: numeric (3, 1)
     + growth_rate: numeric (4, 1)
+    + median_age: numeric (3, 1)
     --
     + year_id: integer [FK] references year(id)
 }
