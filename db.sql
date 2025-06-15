@@ -214,3 +214,42 @@ values
 (9, 87.4, 80.9),
 (10, 85.3, 78.9);
 
+update country_pop_indicators
+set median_age = 17.5
+where year_id = 1;
+
+update country_pop_indicators
+set median_age = 16.6
+where year_id = 2;
+
+update country_pop_indicators
+set median_age = 16.7
+where year_id = 3;
+
+update country_pop_indicators
+set median_age = 16.8
+where year_id = 4;
+
+update country_pop_indicators
+set median_age = 17.0
+where year_id = 5;
+
+update country_pop_indicators
+set median_age = 17.1
+where year_id = 6;
+
+update country_pop_indicators
+set median_age = 17.3
+where year_id = 7;
+
+update country_pop_indicators
+set median_age = 17.7
+where year_id = 8;
+
+update country_pop_indicators
+set median_age = 17.8
+where year_id = 9;
+
+update country_pop_indicators
+set median_age = 17.0
+where year_id = 10;
