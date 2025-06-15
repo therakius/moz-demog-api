@@ -170,3 +170,18 @@ SET data_state = CASE
     WHEN year <= 2023 THEN 'observed'
     ELSE 'projected'
 END
+
+--- missing insertions
+
+
+insert into country_pop_indicators (total_population, male_population, female_population, urban_percentual, sex_ratio, gross_mortality_rate, gross_birth_rate, growth_rate, year_id)
+values
+(27864, 13395, 14469 ,33.3, 92.6, 12.3, 38.6, 2.6, 2);
+(28586, 13758, 14828, 33.6, 92.8, 12.5, 38.3, 2.6, 3),
+(29318, 14125, 15193, 33.8, 93.0, 12.4, 37.9, 2.6, 4),
+(30067, 14501, 15565, 34.0, 93.2, 12.3, 37.6, 2.5, 5),
+(30832, 14886, 15946, 34.2, 93.4, 12.1, 37.2, 2.5, 6),
+(31616, 15280, 16336, 34.5, 93.5, 11.9, 37.0, 2.5, 7),
+(33244, 16098, 17146, 34.9, 93.9, 11.5, 36.5, 2.5, 8),
+(34090, 16524, 17566, 35.0, 94.1, 11.3, 36.2, 2.5, 9),
+(34959, 16961, 17998, 35.2, 94.2, 11.2, 36.0, 2.5, 10);
