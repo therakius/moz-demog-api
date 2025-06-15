@@ -16,6 +16,7 @@ entity year {
     --
     + year: integer
     + president: text
+    + data_state: text
 }
 
 entity country_data {

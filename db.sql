@@ -139,10 +139,10 @@ values
 (63.9, 66.0, 61.8, 1);
 
 
--- updates and fixings
 
 update life_expectancy_at_birth 
-set male_life_expectancy = 53.2, female_life_expectancy = 59.1, average_life_expectancy = 56.1 WHERE year_id = 1;
+set male_life_expectancy = 53.2, female_life_expectancy = 59.1, average_life_expectancy = 56.1 WHERE ye
+-- updates and fixingsar_id = 1;
 
 alter table year rename column name to year;
 
@@ -151,3 +151,22 @@ ALTER TABLE country_data RENAME COLUMN area_in_sqkm TO total_area_sqkm;
 ALTER TABLE population_per_thousand RENAME COLUMN total TO per_thousand_total;
 ALTER TABLE population_per_thousand RENAME COLUMN male_population TO per_thousand_male;
 ALTER TABLE population_per_thousand RENAME COLUMN female_population TO per_thousand_female;
+
+insert into year (year)
+values
+(2017), (2018), (2019),(2020), (2021), (2022), (2024), (2025), (2026); 
+alter table year add data_state text;
+
+update year
+set head_of_state = 'Felipe Jacinto Nyusi'
+where year <= 2024
+
+update year 
+set head_of_state = 'Daniel Francisco Chapo'
+where year > 2024;
+
+UPDATE year
+SET data_state = CASE
+    WHEN year <= 2023 THEN 'observed'
+    ELSE 'projected'
+END
