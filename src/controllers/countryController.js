@@ -4,7 +4,8 @@ export async function getAllCountryData (req, res) {
     const query = `
             select json_build_object(
                 'country_information_year', (
-                    select json_build_object(
+                    select json_agg(
+					json_build_object(
                         'year', y.year,
                         'president', y.head_of_state,
                         'capital_city', cd.capital_city,
@@ -12,7 +13,8 @@ export async function getAllCountryData (req, res) {
                         'independence_date', cd.independence_date,
                         'total_area_sqkm', cd.total_area_sqkm
 
-                    ) from year y, country_data cd
+                    ) 
+					)from year y, country_data cd 
                 ),
                 'provinces_data', (
                     select json_agg(row_to_json(pd))
