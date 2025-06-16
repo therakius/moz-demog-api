@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>moz-demog-api Documentation</title>
+<style>
+  /* Reset básico */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    line-height: 1.6;
+    margin: 2rem ;
+    color: #24292e;
+    background: #fff;
+    padding: 0 1rem;
+  }
+  h1, h2, h3 {
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #0366d6;
+  }
+  h1 {
+    border-bottom: 2px solid #eaecef;
+    padding-bottom: 0.3rem;
+  }
+  p {
+    margin-bottom: 1rem;
+  }
+  p {
+    padding-left: 1rem;
+    border-left: 4px solid #dfe2e5;
+    color: #6a737d;
+    font-style: italic;
+    background: #f6f8fa;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid #e1e4e8;
+    margin: 3rem 0;
+  }
+
+  /* Código */
+  pre {
+    background-color: #f6f8fa;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+  code {
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    font-size: 0.9rem;
+  }
+
+  /* Destaque do JavaScript - Pygments CSS adaptado */
+  .tok-comment { color: #6a737d; font-style: italic; }
+  .tok-keyword { color: #d73a49; font-weight: bold; }
+  .tok-name { color: #24292e; }
+  .tok-string { color: #032f62; }
+  .tok-number { color: #005cc5; }
+  .tok-operator { color: #d73a49; }
+  .tok-punctuation { color: #24292e; }
+  .tok-function { color: #6f42c1; }
+  .tok-class-name { color: #6f42c1; font-weight: bold; }
+  .tok-attr-name { color: #6f42c1; }
+  .tok-builtin { color: #005cc5; }
+  .tok-literal { color: #005cc5; }
+  .tok-variable { color: #e36209; }
+  .tok-constant { color: #005cc5; }
+  .tok-tag { color: #22863a; }
+  .tok-attr-value { color: #032f62; }
+  .tok-decorator { color: #6f42c1; }
+  .tok-error { background-color: #ffdddd; color: #b31d28; }
+  /* Additional */
+  .language-js {
+    display: block;
+  }
+
+  /* curl code style - monospace, dark blue */
+  pre.curl {
+    background-color: #eef6fc;
+    border-color: #a8c6ea;
+    color: #084298;
+    font-weight: 600;
+  }
+
+</style>
+</head>
+<body>
+
+<h1>moz-demog-api</h1>
+
+<h2>Introdução</h2>
+<p><strong>moz-demog-api</strong> é uma API pública RESTful que fornece dados demográficos de Moçambique entre 2017 e 2026, em formato JSON</p>
+<p>Ela é destinada a desenvolvedores, estudantes de programação, cientistas de dados e qualquer pessoa com habilidades técnicas necessárias para o seu uso.</p>
+<p>Todos os dados foram adquiridos através dos recursos disponibilizados no site oficial do Instituto Nacional de Estatística (INE).</p>
+
+<h2>Endpoints (pontos de acesso da api)</h2>
+<p>No momento, a API está hospedada em um serviço gratuito e com limitações.<br />
+A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" rel="noopener noreferrer">https://moz-demog-api.onrender.com/api</a>.</p>
+<p>Os endpoints disponíveis são:</p>
+
+<h3>GET country info</h3>
+<p>Retorna dados em JSON com informações básicas do país, no ano corrente.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "id": 1,
+        "capital_city": "Maputo",
+        "official_language": "Portuguese",
+        "independence_date": "1975-06-25T00:00:00.000Z",
+        "total_area_sqkm": 799380,
+        "head_of_state": "Daniel Francisco Chapo"
+    }
+]</code></pre>
+
+<h3>GET country/all</h3>
+<p>Retorna todas as informações do país disponíveis, para todos os anos.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country/all</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "data": {
+            "country_info": {
+                "country_data": [
+                    {
+                        "year": 2023,
+                        "head_of_state": "Felipe Jacinto Nyusi",
+                        "id": 1,
+                        "capital_city": "Maputo",
+                        "official_language": "Portuguese",
+                        "independence_date": "1975-06-25",
+                        "total_area_sqkm": 799380
+                    },
+                    {
+                        "year": 2017,
+
+                    //mais dados abaixo</code></pre>
+
+<h3>GET country/:ano</h3>
+<p>Retorna todas as informações do país disponíveis, filtrando por ano específico.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country/2025</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "info": {
+            "country_info": {
+                "country_data": [
+                    {
+                        "year": 2025,
+                        "head_of_state": "Daniel Francisco Chapo",
+                        "id": 1,
+                        "capital_city": "Maputo",
+                        "official_language": "Portuguese",
+                        "independence_date": "1975-06-25",
+                        "total_area_sqkm": 799380
+                    }
+                ],
+                "list_of_provinces": [
+
+                    //mais dados abaixo</code></pre>
+
+<h3>GET provinces</h3>
+<p>Retorna dados populacionais categorizados por província. Os dados disponibilizados para as províncias são atualmente apenas para o ano de 2023.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "province_data": [
+            {
+                "province_name": "Niassa",
+                "population_per_1000hab": {
+                    "id": 1,
+                    "per_thousand_male": 1072,
+                    "per_thousand_female": 1131,
+                    "per_thousand_total": 2203,
+                    "province_id": 1
+                },
+                "population_percentual_structure": {
+                    //mais dados abaixo</code></pre>
+
+<h3>GET provinces/:nome</h3>
+<p>Retorna dados populacionais disponibilizados para a província, no ano de 2023, filtrando a província pelo nome.<br />
+O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome contiver espaços, respeite-os (ex. Cabo Delgado, Cidade de Maputo).</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/Cidade de Maputo</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "province_data": [
+            {
+                "province_name": "Cidade de Maputo",
+                "population_per_1000hab": {
+                    "id": 11,
+                    "per_thousand_male": 551,
+                    "per_thousand_female": 582,
+                    "per_thousand_total": 1133,
+                    "province_id": 11
+                },
+                    //mais dados abaixo</code></pre>
+
+<h3>GET provinces/:name/percentual-structure</h3>
+<p>Retorna a estrutura percentual da população de certa província.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/Maputo/percentual-structure</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "province_data": [
+            {
+                "province_name": "Cidade de Maputo",
+                "population_percentual_structure": {
+                    "id": 11,
+                    "male_population": 3.5,
+                    "female_population": 3.5,
+                    "total": 3.5,
+                    "province_id": 11
+                }
+            }
+        ]
+    }
+]</code></pre>
+
+<h3>GET provinces/:name/per-thousand</h3>
+<p>Retorna a população da província por 1000 habitantes.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/Maputo/per-thousand</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "province_data": [
+            {
+                "province_name": "Cidade de Maputo",
+                "population_percentual_structure": {
+                    "id": 11,
+                    "male_population": 3.5,
+                    "female_population": 3.5,
+                    "total": 3.5,
+                    "province_id": 11
+                }
+            }
+        ]
+    }
+]</code></pre>
+
+<h3>GET provinces/year/:ano</h3>
+<p>Retorna todos os dados de todas as províncias para um ano específico.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/year/2023</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "province_data": [
+            {
+                "year": 2023,
+                "province_name": "Niassa",
+                "population_per_1000hab": {
+                    "id": 1,
+                    "per_thousand_male": 1072,
+                    "per_thousand_female": 1131,
+                    "per_thousand_total": 2203,
+                    "province_id": 1
+                },
+                "population_percentual_structure": {
+                    // mais dados abaixo</code></pre>
+
+<h3>GET provinces/years</h3>
+<p>Retorna todos os anos com registros populacionais de províncias.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/years</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "year": 2023
+    }
+]</code></pre>
+
+<h3>GET indicators</h3>
+<p>Retorna indicadores populacionais de todo o país, para os anos entre 2017 e 2026 (inclusive).</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">
+
+        "info": {
+            "indicators": [
+                {
+                    "year": 2023,
+                    "indicators_for_year": {
+                        "populational_indicators": {
+                            "id": 1,
+                            "total_population": 32420,
+                            "male_population": 15684,
+                            "female_population": 16736,
+                            "urban_percentual": 34.7,
+                            "sex_ratio": 93.7,
+                            "gross_mortality_rate": 11.7,
+                            "gross_birth_rate": 36.7,
+                            "growth_rate": 2.5,
+                            "year_id": 1,
+                            "median_age": 17.5
+
+                            //mais dados abaixo</code></pre>
+
+<h3>GET indicators/:ano</h3>
+<p>Retorna indicadores populacionais do país, para um ano específico.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/2023</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "info": {
+            "indicators": [
+                {
+                    "year": 2023,
+                    "indicators_for_year": {
+                        "populational_indicators": {
+                            "id": 1,
+                            "total_population": 32420,
+                            "male_population": 15684,
+                            "female_population": 16736,
+
+                           // mais dados abaixo</code></pre>
+
+<h3>GET indicators/dependency-rate</h3>
+<p>Retorna o índice de dependência da população para todos os anos registrados.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/dependency-rate</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">{
+    "dependency_rate": [
+        {
+            "year": 2023,
+            "indicators": {
+                "year_id": 1,
+                "total": 91.5,
+                "young": 85
+            }
+        },
+        {
+            "year": 2017,
+            "indicators": {
+                "year_id": 2,
+                "total": 99.6,
+                "young": 93.1
+
+        // mais dados abaixo</code></pre>
+
+<h3>GET indicators/dependency-rate/:ano</h3>
+<p>Retorna o índice de dependência da população para um ano específico.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/dependency-rate/2023</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">{
+    "dependency_rate": [
+        {
+            "year": 2023,
+            "indicators": {
+                "year_id": 1,
+                "total": 91.5,
+                "young": 85
+        // mais dados abaixo</code></pre>
+
+<h3>GET indicators/life-expectancy</h3>
+<p>Retorna a expectativa de vida em anos ao nascer, para todos os anos registrados.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/life-expectancy</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "life_expectancy": [
+            {
+                "year": 2023,
+                "life-expectancy": {
+                    "year_id": 1,
+                    "male_life_expectancy": 53.2,
+                    "female_life_expectancy": 59.1,
+                    "average_life_expectancy": 56.1
+                }
+            },
+            {
+                "year": 2017,
+        // mais dados abaixo</code></pre>
+
+<h3>GET indicators/life-expectancy/:ano</h3>
+<p>Retorna a expectativa de vida ao nascer, para um ano específico.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/life-expectancy/2024</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">[
+    {
+        "life_expectancy": [
+            {
+                "year": 2024,
+                "life-expectancy": {
+                    "year_id": 8,
+                    "male_life_expectancy": 54,
+                    "female_life_expectancy": 59.5,
+                    "average_life_expectancy": 56.5
+                }
+            }
+        ]
+    }
+]</code></pre>
+
+<h3>GET indicators/infant-mortality</h3>
+<p>Retorna a taxa de mortalidade infantil para todos os anos disponíveis.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/infant-mortality</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">{
+    "data": [
+        {
+            "infant_mortality": [
+                {
+                    "year": 2023,
+                    "infant_mortality": {
+                        "year_id": 1,
+                        "average_infant_mortality": 63.9,
+                        "male_infant_mortality": 66,
+                        "female_infant_mortality": 61.8
+                    }
+                },
+                {
+                    "year": 2017,
+                    "infant_mortality":
+```
+
+
+{
+"year\_id": 2,
+"average\_infant\_mortality": 69,
+"male\_infant\_mortality": 71,
+"female\_infant\_mortality": 66.8
+}
+},
+//mais dados abaixo</code></pre>
+
+<h3>GET indicators/infant-mortality/:ano</h3>
+<p>Retorna a taxa de mortalidade infantil para um ano específico.</p>
+
+<h4>exemplo de requisicao:</h4>
+<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/infant-mortality/2023</code></pre>
+
+<h4>resposta:</h4>
+<pre><code class="language-js">{
+    "data": [
+        {
+            "infant_mortality": [
+                {
+                    "year": 2023,
+                    "infant_mortality": {
+                        "year_id": 1,
+                        "average_infant_mortality": 63.9,
+                        "male_infant_mortality": 66,
+                        "female_infant_mortality": 61.8
+                    }
+                }
+            ]
+        }
+    ]
+}</code></pre>
+
+<h2>Como utilizar</h2>
+<p>Para utilizar qualquer endpoint, basta realizar uma requisição HTTP do tipo <code>GET</code> para o endereço correspondente, utilizando uma ferramenta como curl, Postman, Insomnia, ou mesmo via código JavaScript com <code>fetch()</code> ou bibliotecas como Axios.</p>
+
+<p>Exemplo básico em <code>curl</code> para obter os dados do país:</p>
+<pre class="curl"><code>curl https://moz-demog-api.onrender.com/api/country</code></pre>
+
+<p>Os dados retornados são em formato JSON, prontamente consumíveis por sistemas e aplicações.</p>
+
+<h2>Limitações atuais</h2>
+<ul>
+  <li>Os dados das províncias disponíveis são somente para o ano de 2023.</li>
+  <li>A API está hospedada em ambiente gratuito, podendo haver limitações de performance e disponibilidade.</li>
+  <li>Futuras versões poderão incluir suporte a POST, PUT, DELETE e autenticação.</li>
+</ul>
+
+<h2>Contato</h2>
+<p>Para sugestões, dúvidas ou reportar bugs, entre em contato pelo email: <a href="mailto:therakius.dev@gmail.com">contato@mozdemogapi.me</a></p>
+
+<hr />
+<p style="font-size: 0.8rem; color: #666;">© 2025 moz-demog-api</p>
+
+</body>
+</html>

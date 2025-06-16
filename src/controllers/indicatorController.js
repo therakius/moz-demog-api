@@ -103,7 +103,7 @@ export async function dependencyRate(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows[0])
+        res.status(200).json(result.rows)
 
     } catch (error) {
         console.error(error, error.message)
