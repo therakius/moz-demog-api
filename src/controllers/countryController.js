@@ -2,79 +2,66 @@ import db from "../models/db.js";
 
 export async function getAllCountryData (req, res) {
     const query = `
-            select json_build_object(
-                'country_information_year', (
-                    select json_agg(
-					json_build_object(
-                        'year', y.year,
-                        'president', y.head_of_state,
-                        'capital_city', cd.capital_city,
-                        'official_language', cd.official_language,
-                        'independence_date', cd.independence_date,
-                        'total_area_sqkm', cd.total_area_sqkm
+ select json_build_object(
+    'country_info', (select json_build_object(
+        'country_data', (
+            select json_agg(row_to_json(t))
+            from (
+                select y.year, y.head_of_state, cd.* 
+                from year y, country_data cd
+            ) t
+            ),
+        'list_of_provinces', (
+            select json_agg(p.province_name)
+            from provinces p
+            )
+    )),
 
-                    ) 
-					)from year y, country_data cd 
-                ),
-                'provinces_data', (
-                    select json_agg(row_to_json(pd))
-                    from (
-                    select * from provinces
-                    ) pd
-                ),
-                'populational_data', (
-                    select json_build_object(
-                        'dependency_rate', (
-                            select json_agg(row_to_json(dr))
-                            from (select y.year, dpr.total, dpr.young 
-                            from dependency_rate dpr, year y 
-                            where y.id = dpr.year_id) dr
-                            ),
-                        'population_per_thousand', (
-                            SELECT json_agg(row_to_json(ppt))
-                            FROM (
-                                SELECT y.year, p.province_name, pt.per_thousand_male, pt.per_thousand_female, pt.per_thousand_total 
-                                FROM population_per_thousand pt, year y, provinces p 
-                                WHERE y.id = p.year_id AND p.id = pt.province_id
-                            ) ppt
-                        ),
-                        'population_percentual_structure', (
-                            select json_agg(row_to_json(ps))
-                            from (
-                                SELECT y.year, p.province_name, pst.male_population, pst.female_population, pst.total 
-                                FROM population_percentual_structure pst , year y, provinces p 
-                                WHERE y.id = p.year_id AND p.id = pst.province_id
-                            ) ps
-                        ),
-                        'life_expectancy_at_birth', (
-                            select json_agg(row_to_json(leb))
-                            from (select y.year, leb.average_life_expectancy, leb.male_life_expectancy, leb.female_life_expectancy 
-                            from year y, life_expectancy_at_birth leb
-                            where leb.year_id = y.id
-                            ) leb
-                        ),
-                        'infant_mortality', (
-                            select json_agg(row_to_json(infm))
-                            from (
-                                select y.year, im.average_infant_mortality, im.male_infant_mortality, im.female_infant_mortality
-                                from year y, infant_mortality im
-                                where y.id = im.year_id
-                            ) infm
-                        ),
-                        'general_indicators', (
-                            select json_agg(row_to_json(gnr))
-                            from (
-                                select y.year, cpi.*
-                                from year y, country_pop_indicators cpi
-                                where y.id = cpi.year_id
-                            ) gnr
-                        )
-                        
-                        
-                        ) 
-                    )
-                ) as general_information;
+  'indicators', (
+    SELECT json_agg(
+      json_build_object(
+        'year', y.year,
+        'indicators_for_year', json_build_object(
+          'populational_indicators', row_to_json(cpi),
+          'dependency_rate', row_to_json(dr),
+          'life_expectancy', row_to_json(leb),
+          'infant_mortality', row_to_json(im)
+        )
+      )
+    )
+    FROM year y
+    LEFT JOIN country_pop_indicators cpi ON y.id = cpi.year_id
+    LEFT JOIN dependency_rate dr ON y.id = dr.year_id
+    LEFT JOIN life_expectancy_at_birth leb ON y.id = leb.year_id
+    LEFT JOIN infant_mortality im ON y.id = im.year_id
+    ),
 
+    'provinces_data', (
+        select json_agg(
+            json_build_object(
+                'province_name', p.province_name,
+                'province_info', row_to_json(p)
+            )
+        )
+        from provinces p
+    ),
+
+    'population_per_province', (
+        select json_agg(
+        json_build_object(
+            'province_name', p.province_name,
+            'population_per_1000hab', row_to_json(ppt),
+            'population_percentual_structure', row_to_json(pps)
+        )            
+        )
+        from provinces p 
+        left join population_percentual_structure pps on p.id = pps.province_id
+        left join population_per_thousand ppt on p.id = ppt.province_id
+
+        
+    )
+
+) data;
     `
     try {
        const result = await db.query(query)
@@ -83,7 +70,7 @@ export async function getAllCountryData (req, res) {
             return res.status(404).json({erro: "Informacao nao encontrada"})
         }
 
-        const data = result.rows[0];
+        const data = result.rows;
         res.json(data);
     } catch (error) {
         console.error(error);
@@ -92,11 +79,13 @@ export async function getAllCountryData (req, res) {
 }
 
 export async function getCountryData(req, res){
-
+    const date = new Date()
+    const currentYear = date.getFullYear()
     const query = `
 
         select cd.*, y.head_of_state
-        from year y, country_data cd;
+        from year y, country_data cd
+        where year = ${currentYear}
     
     `
 
@@ -107,7 +96,7 @@ export async function getCountryData(req, res){
             return res.status(404).json({erro: "Data not found"})
         }
 
-        res.json({data: result.rows[0]})
+        res.json({data: result.rows})
     } catch (error) {
         res.status(500).json({erro: "Internal server error"})
     }
@@ -118,78 +107,70 @@ export async function getCountryDataPerYear(req, res) {
     const year = req.params.year;
 
     const query = `
-    select json_build_object(
-    'country_information_year', (
-        select json_build_object(
-            'year', y.year,
-            'president', y.head_of_state,
-            'capital_city', cd.capital_city,
-            'official_language', cd.official_language,
-            'independence_date', cd.independence_date,
-            'total_area_sqkm', cd.total_area_sqkm
+ select json_build_object(
+    'country_info', (select json_build_object(
+        'country_data', (
+            select json_agg(row_to_json(t))
+            from (
+                select y.year, y.head_of_state, cd.* 
+                from year y, country_data cd
+                where y.year = $1
+            ) t
+            ),
+        'list_of_provinces', (
+            select json_agg(p.province_name)
+            from provinces p
+            )
+    )),
 
-        ) from year y, country_data cd
+  'indicators', (
+    SELECT json_agg(
+      json_build_object(
+        'year', y.year,
+        'indicators_for_year', json_build_object(
+          'populational_indicators', row_to_json(cpi),
+          'dependency_rate', row_to_json(dr),
+          'life_expectancy', row_to_json(leb),
+          'infant_mortality', row_to_json(im)
+        )
+      )
+    )
+    FROM year y
+    LEFT JOIN country_pop_indicators cpi ON y.id = cpi.year_id
+    LEFT JOIN dependency_rate dr ON y.id = dr.year_id
+    LEFT JOIN life_expectancy_at_birth leb ON y.id = leb.year_id
+    LEFT JOIN infant_mortality im ON y.id = im.year_id
+    where y.year = $1
     ),
-	'provinces_data', (
-		select json_agg(row_to_json(pd))
-		from (
-		select * from provinces
-		) pd
-	),
-	'populational_data', (
-		select json_build_object(
-			'dependency_rate', (
-				select json_agg(row_to_json(dr))
-				from (select y.year, dpr.total, dpr.young 
-				from dependency_rate dpr, year y 
-				where y.id = dpr.year_id) dr
-				),
-			'population_per_thousand', (
-			    SELECT json_agg(row_to_json(ppt))
-			    FROM (
-			        SELECT y.year, p.province_name, pt.per_thousand_male, pt.per_thousand_female, pt.per_thousand_total 
-			        FROM population_per_thousand pt, year y, provinces p 
-			        WHERE y.id = p.year_id AND p.id = pt.province_id
-			    ) ppt
-			),
-			'population_percentual_structure', (
-				select json_agg(row_to_json(ps))
-				from (
-					SELECT y.year, p.province_name, pst.male_population, pst.female_population, pst.total 
-			        FROM population_percentual_structure pst , year y, provinces p 
-			        WHERE y.id = p.year_id AND p.id = pst.province_id
-				) ps
-			),
-			'life_expectancy_at_birth', (
-				select json_agg(row_to_json(leb))
-				from (select y.year, leb.average_life_expectancy, leb.male_life_expectancy, leb.female_life_expectancy 
-				from year y, life_expectancy_at_birth leb
-				where leb.year_id = y.id
-				) leb
-			),
-			'infant_mortality', (
-				select json_agg(row_to_json(infm))
-				from (
-					select y.year, im.average_infant_mortality, im.male_infant_mortality, im.female_infant_mortality
-					from year y, infant_mortality im
-					where y.id = im.year_id
-				) infm
-			),
-			'general_indicators', (
-				select json_agg(row_to_json(gnr))
-				from (
-					select y.year, cpi.*
-					from year y, country_pop_indicators cpi
-					where y.id = cpi.year_id
-				) gnr
-			)
-			
-			
-			) 
-		)
-	) as general_information 
-	from year y
-	where year = $1;
+
+    'provinces_data', (
+        select json_agg(
+            json_build_object(
+                'province_name', p.province_name,
+                'province_info', row_to_json(p)
+            )
+        )
+        from provinces p
+    ),
+
+    'population_per_province', (
+        select json_agg(
+        json_build_object(
+            'province_name', p.province_name,
+            'population_per_1000hab', row_to_json(ppt),
+            'population_percentual_structure', row_to_json(pps)
+        )            
+        )
+        from provinces p 
+        left join population_percentual_structure pps on p.id = pps.province_id
+        left join population_per_thousand ppt on p.id = ppt.province_id
+        left join year y on y.id = p.year_id
+        where y.year = $1
+
+        
+    )
+
+) info;
 
     `
 
@@ -200,7 +181,7 @@ export async function getCountryDataPerYear(req, res) {
             return res.status(404).json({info: "Data not found"})
         }
 
-        res.json({data: result.rows[0]})
+        res.json({'data':result.rows})
 
     } catch (error) {
         console.log(error)
