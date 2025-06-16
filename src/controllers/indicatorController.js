@@ -3,9 +3,24 @@ import db from "../models/db.js";
 export async function getPopIndicators(req, res) {
 
     const query = `
-        SELECT y.year, cpi.*
-        FROM year y, country_pop_indicators cpi
-        ORDER BY y.year;
+        select json_build_object(
+        'indicators', json_agg(
+            json_build_object(
+            'year', y.year,
+            'indicators_for_year', json_build_object(
+                'populational_indicators', row_to_json(cpi),
+                'dependency_rate', row_to_json(dr),
+                'life_expectancy', row_to_json(leb),
+                'infant_mortality', row_to_json(im)
+            )
+            )
+        )
+        ) info
+        from year y
+        left join country_pop_indicators cpi on y.id = cpi.year_id
+        left join dependency_rate dr on y.id = dr.year_id
+        left join life_expectancy_at_birth leb on y.id = leb.year_id
+        left join infant_mortality im on y.id = im.year_id
     `
     try {
         const result = await db.query(query)
@@ -14,7 +29,7 @@ export async function getPopIndicators(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data : result.rows})
+        res.status(200).json(result.rows[0][0])
 
     } catch (error) {
         console.log(error)
@@ -28,11 +43,31 @@ export async function getPopIndicatorsPerYear(req, res) {
     const year = req.params.year;
 
     const query = `
-        SELECT y.year, cpi.*
-        FROM year y, country_pop_indicators cpi
-        where y.year = $1
-        ORDER BY y.year;
+        select json_build_object(
+        'indicators', json_agg(
+            json_build_object(
+            'year', y.year,
+            'indicators_for_year', json_build_object(
+                'populational_indicators', row_to_json(cpi),
+                'dependency_rate', row_to_json(dr),
+                'life_expectancy', row_to_json(leb),
+                'infant_mortality', row_to_json(im)
+            )
+            )
+        )
+        ) info
+        from year y
+        left join country_pop_indicators cpi on y.id = cpi.year_id
+        left join dependency_rate dr on y.id = dr.year_id
+        left join life_expectancy_at_birth leb on y.id = leb.year_id
+        left join infant_mortality im on y.id = im.year_id
+        where year = $1
     `
+
+    if (year > 2026 || year < 2017) {
+        return res.status(404).json({info: 'Data unavailable'})
+    }
+    
     try {
         const result = await db.query(query, [year])
 
@@ -40,7 +75,7 @@ export async function getPopIndicatorsPerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data : result.rows})
+        res.status(200).json(result.rows[0][0])
     } catch (error) {
         res.status(500).json({info: 'internal server error'})
     }
@@ -49,8 +84,14 @@ export async function getPopIndicatorsPerYear(req, res) {
 
 export async function dependencyRate(req, res){
     const query = `
-        select y.year, dr.*
-        from year y, dependency_rate dr
+        select json_agg(
+            json_build_object(
+                'year', y.year,
+                'indicators', row_to_json(dr)
+            )
+        ) dependency_rate
+        from year y
+        join dependency_rate dr on y.id = dr.year_id;
     `
 
     try {
@@ -62,7 +103,7 @@ export async function dependencyRate(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.json({data: result.rows})
+        res.status(200).json(result.rows[0])
 
     } catch (error) {
         console.error(error, error.message)
@@ -73,10 +114,21 @@ export async function dependencyRate(req, res){
 export async function dependencyRatePerYear(req, res) {
     const year = req.params.year
     const query = `
-        select y.year, dr.*
-        from year y, dependency_rate dr
-        where y.year = $1
+        select json_agg(
+            json_build_object(
+                'year', y.year,
+                'indicators', row_to_json(dr)
+            )
+        ) dependency_rate
+        from year y
+        join dependency_rate dr on y.id = dr.year_id
+        where year = $1;
     `
+
+
+    if (year > 2026 || year < 2017) {
+        return res.status(404).json({info: 'Data unavailable'})
+    }
 
     try {
         const result = await db.query(query, [year])
@@ -85,7 +137,7 @@ export async function dependencyRatePerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json(result.rows[0])
     } catch (error) {
         console.log(error)
         res.status(500).json({info : 'internal server error'})
@@ -95,8 +147,14 @@ export async function dependencyRatePerYear(req, res) {
 
 export async function lifeExpectancy(req, res){
     const query = `
-        select y.year, leb.*
-        from year y, life_expectancy_at_birth leb
+        select json_agg(
+            json_build_object(
+                'year', y.year,
+                'life-expectancy', row_to_json(leb)
+            )
+        ) life_expectancy
+        from year y
+        join life_expectancy_at_birth leb on y.id = leb.year_id;
     `
 
     try {
@@ -106,7 +164,7 @@ export async function lifeExpectancy(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json(result.rows[0])
     } catch (error) {
         console.log(error)
         res.status(500).json({info: 'internal server error'})
@@ -117,10 +175,21 @@ export async function lifeExpectancyPerYear(req, res) {
 
     const year = req.params.year
     const query = `
-        select y.year, leb.*
-        from year y, life_expectancy_at_birth leb
+        select json_agg(
+            json_build_object(
+                'year', y.year,
+                'life-expectancy', row_to_json(leb)
+            )
+        ) life_expectancy
+        from year y
+        join life_expectancy_at_birth leb on y.id = leb.year_id
         where y.year = $1
     `
+
+    if (year > 2026 || year < 2017) {
+        return res.status(404).json({info: 'Data unavailable'})
+    }
+
     try {
         const result = await db.query(query, [year])
 
@@ -128,7 +197,7 @@ export async function lifeExpectancyPerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json(result.rows[0])
 
     } catch (error) {
         console.log(error)
@@ -138,8 +207,14 @@ export async function lifeExpectancyPerYear(req, res) {
 
 export async function infantMortality(req, res){
     const query = `
-        select y.year, im.*
-        from year y, infant_mortality im
+        select json_agg(
+            json_build_object(
+                'year', y.year,
+                'infant_mortality', row_to_json(im)
+            )
+        ) infant_mortality
+        from year y
+        join infant_mortality im on y.id = im.year_id;
     `
 
     try {
@@ -150,7 +225,7 @@ export async function infantMortality(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json({data: result.rows[0]})
         
     } catch (error) {
         console.log(error)
@@ -163,10 +238,21 @@ export async function infantMortalityPerYear(req, res){
     const year = req.params.year
 
     const query = `
-        select y.year, im.*
-        from year y, infant_mortality im
-        where y.year = $1
+        select json_agg(
+            json_build_object(
+                'year', y.year,
+                'infant_mortality', row_to_json(im)
+            )
+        ) infant_mortality
+        from year y
+        join infant_mortality im on y.id = im.year_id
+        where y.year = $1;
     `
+
+        if (year > 2026 || year < 2017) {
+            return res.status(404).json({info: 'Data unavailable'})
+        }
+
 
     try {
 
@@ -176,7 +262,7 @@ export async function infantMortalityPerYear(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json({data: result.rows[0]})
         
     } catch (error) {
         console.log(error)
