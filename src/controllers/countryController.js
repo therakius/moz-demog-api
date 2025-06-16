@@ -96,7 +96,7 @@ export async function getCountryData(req, res){
             return res.status(404).json({erro: "Data not found"})
         }
 
-        res.json({data: result.rows})
+        res.json(result.rows)
     } catch (error) {
         res.status(500).json({erro: "Internal server error"})
     }
@@ -181,7 +181,7 @@ export async function getCountryDataPerYear(req, res) {
             return res.status(404).json({info: "Data not found"})
         }
 
-        res.json({'data':result.rows})
+        res.json(result.rows)
 
     } catch (error) {
         console.log(error)
