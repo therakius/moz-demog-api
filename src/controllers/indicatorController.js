@@ -29,7 +29,7 @@ export async function getPopIndicators(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows[0][0])
+        res.status(200).json(result.rows)
 
     } catch (error) {
         console.log(error)
@@ -75,7 +75,7 @@ export async function getPopIndicatorsPerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows[0][0])
+        res.status(200).json(result.rows)
     } catch (error) {
         res.status(500).json({info: 'internal server error'})
     }

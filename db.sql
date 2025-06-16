@@ -210,4 +210,4 @@ create table public.country_data (
 select * from public.country_data;
 
 INSERT INTO public.country_data (capital_city, official_language, independence_date, total_area_sqkm) 
-VALUES ('Maputo', 'Portuguese', '1975-06-25', 799380)
+VALUES ('Maputo', 'Portuguese', '1975-06-25', 799380);
