@@ -114,7 +114,7 @@ export async function perThousandByProvinceName(req, res) {
 
 export async function getProvincesbyYear(req, res){
     const year = req.params.year;
-    console.log(typeof year)
+    
 
     const query = `
     
@@ -139,7 +139,7 @@ export async function getProvincesbyYear(req, res){
     }
     try {
         const result = await db.query(query, [year])
-        console.log(result)
+        
         if (result.rows.length === 0) return res.status(404).json({erro: "province not found"});
 
         res.json(result.rows);
@@ -163,7 +163,7 @@ export async function getAvailableYears(req, res) {
     `
     try {
         const result = await db.query(query)
-        console.log(result)
+        
         if (result.rowsCount === 0) return res.status(404).json({erro: "province not found"});
 
         res.json(result.rows);
