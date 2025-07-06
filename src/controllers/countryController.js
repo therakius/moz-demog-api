@@ -2,19 +2,21 @@ import db from "../models/db.js";
 
 export async function getAllCountryData (req, res) {
     const query = `
- select json_build_object(
+select json_build_object(
     'country_info', (select json_build_object(
-        'country_data', (
-            select json_agg(row_to_json(t))
-            from (
-                select y.year, y.head_of_state, cd.* 
-                from year y, country_data cd
-            ) t
-            ),
-        'list_of_provinces', (
+		 'list_of_provinces', (
             select json_agg(p.province_name)
             from provinces p
-            )
+            ),
+			'capital_city', (select capital_city from country_data),
+			'independence_data', (select independence_date from country_data),
+			'official_language', (select official_language from country_data),
+			'president_per_year', (SELECT json_agg(
+      json_build_object(
+        'year', y.year,
+		'president', y.head_of_state
+        )
+      ) from year y)
     )),
 
   'indicators', (
@@ -60,8 +62,7 @@ export async function getAllCountryData (req, res) {
 
         
     )
-
-) data;
+) info;
     `
     try {
        const result = await db.query(query)
@@ -70,8 +71,10 @@ export async function getAllCountryData (req, res) {
             return res.status(404).json({erro: "Informacao nao encontrada"})
         }
 
-        const data = result.rows;
-        res.json(data);
+        const dataArray = [];
+
+        dataArray.push(result.rows[0].info)
+        res.json(dataArray);
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Internal error."});
@@ -83,9 +86,15 @@ export async function getCountryData(req, res){
     const currentYear = date.getFullYear()
     const query = `
 
-        select cd.*, y.head_of_state
-        from year y, country_data cd
-        where year = ${currentYear}
+    select json_build_object(
+        'year', y.year,
+        'head_of_state', y.head_of_state,
+        'list_of_provinces', (select json_agg(p.province_name)
+    from provinces p),
+        'total_area_km2', cd.total_area_sqkm,
+        'independence_date', cd.independence_date
+    )info from country_data cd, year y
+    where y.year = ${currentYear}
     
     `
 
@@ -96,7 +105,10 @@ export async function getCountryData(req, res){
             return res.status(404).json({erro: "Data not found"})
         }
 
-        res.json(result.rows)
+        const dataArray = [];
+
+        dataArray.push(result.rows[0].info)
+        res.json(dataArray);
     } catch (error) {
         res.status(500).json({erro: "Internal server error"})
     }
@@ -112,21 +124,16 @@ export async function getCountryDataPerYear(req, res) {
         'country_data', (
             select json_agg(row_to_json(t))
             from (
-                select y.year, y.head_of_state, cd.* 
-                from year y, country_data cd
+                select y.year, y.head_of_state
+				from year y
                 where y.year = $1
             ) t
-            ),
-        'list_of_provinces', (
-            select json_agg(p.province_name)
-            from provinces p
             )
     )),
 
   'indicators', (
     SELECT json_agg(
       json_build_object(
-        'year', y.year,
         'indicators_for_year', json_build_object(
           'populational_indicators', row_to_json(cpi),
           'dependency_rate', row_to_json(dr),
@@ -150,7 +157,9 @@ export async function getCountryDataPerYear(req, res) {
                 'province_info', row_to_json(p)
             )
         )
-        from provinces p
+        from provinces p, year y
+		where p.year_id = y.id
+        and y.year = $1
     ),
 
     'population_per_province', (
@@ -166,8 +175,6 @@ export async function getCountryDataPerYear(req, res) {
         left join population_per_thousand ppt on p.id = ppt.province_id
         left join year y on y.id = p.year_id
         where y.year = $1
-
-        
     )
 
 ) info;
@@ -181,7 +188,9 @@ export async function getCountryDataPerYear(req, res) {
             return res.status(404).json({info: "Data not found"})
         }
 
-        res.json(result.rows)
+        const dataArray =[]
+        dataArray.push(result.rows[0].info)
+        res.json(dataArray);
 
     } catch (error) {
         console.log(error)

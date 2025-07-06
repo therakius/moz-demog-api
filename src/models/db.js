@@ -10,6 +10,14 @@ const db = new pg.Pool({
   }
 });
 
+// const db = new pg.Pool({
+//   user: "postgres",
+//   host: "localhost",
+//   database: "moz-demog-api",
+//   password: "sic parvis magna",
+//   port: 5432
+// })
+
 
 db.connect()
   .then(() => console.log('🟢 Connected to neon successfully'))
