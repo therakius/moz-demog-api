@@ -29,7 +29,8 @@ export async function getPopIndicators(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows)
+        const dataArray =result.rows[0].info.indicators
+        res.status(200).json(dataArray);
 
     } catch (error) {
         console.log(error)
@@ -75,7 +76,7 @@ export async function getPopIndicatorsPerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows)
+        res.status(200).json(result.rows[0].info.indicators)
     } catch (error) {
         res.status(500).json({info: 'internal server error'})
     }
@@ -103,7 +104,8 @@ export async function dependencyRate(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows)
+        const dataArray =result.rows[0].dependency_rate
+        res.status(200).json(dataArray);
 
     } catch (error) {
         console.error(error, error.message)
@@ -137,7 +139,8 @@ export async function dependencyRatePerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows)
+        const dataArray =result.rows[0].dependency_rate
+        res.status(200).json(dataArray);
     } catch (error) {
         console.log(error)
         res.status(500).json({info : 'internal server error'})
@@ -164,7 +167,8 @@ export async function lifeExpectancy(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows)
+        const dataArray =result.rows[0].life_expectancy
+        res.status(200).json(dataArray);
     } catch (error) {
         console.log(error)
         res.status(500).json({info: 'internal server error'})
@@ -197,7 +201,8 @@ export async function lifeExpectancyPerYear(req, res) {
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json(result.rows)
+        const dataArray =result.rows[0].life_expectancy;
+        res.status(200).json(dataArray)
 
     } catch (error) {
         console.log(error)
@@ -225,7 +230,7 @@ export async function infantMortality(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json(result.rows[0].infant_mortality)
         
     } catch (error) {
         console.log(error)
@@ -262,7 +267,7 @@ export async function infantMortalityPerYear(req, res){
             return res.status(404).json({info: 'Data not found'})
         }
 
-        res.status(200).json({data: result.rows})
+        res.status(200).json(result.rows[0].infant_mortality)
         
     } catch (error) {
         console.log(error)

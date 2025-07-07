@@ -3,20 +3,20 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const db = new pg.Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
 // const db = new pg.Pool({
-//   user: "postgres",
-//   host: "localhost",
-//   database: "moz-demog-api",
-//   password: "sic parvis magna",
-//   port: 5432
-// })
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false
+//   }
+// });
+
+const db = new pg.Pool({
+  user: "postgres",
+  host: "localhost",
+  database: "moz-demog-api",
+  password: "sic parvis magna",
+  port: 5432
+})
 
 
 db.connect()
