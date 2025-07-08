@@ -68,7 +68,7 @@ select json_build_object(
        const result = await db.query(query)
 
         if (result.rows.lenght === 0) {
-            return res.status(404).json({erro: "Informacao nao encontrada"})
+            return res.status(404).json({error: "Informacao nao encontrada"})
         }
 
         const dataArray = [];
