@@ -18,7 +18,7 @@ export async function getProvinces(req, res) {
     `
     try {
         const result = await db.query(query);
-        res.json(result.rows)
+        res.status(200).json(result.rows[0].province_data)
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Internal server error"});
@@ -48,7 +48,7 @@ export async function getProvincesByName (req, res) {
 
         if (result.rowCount === 0) return res.status(404).json({erro: "province not found"});
 
-        res.json(result.rows);
+        res.status(200).json(result.rows[0].province_data)
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Internal server error"});
@@ -74,7 +74,8 @@ export async function percentualStructureByProvinceName(req, res) {
         
         if (result.rowsCount === 0) return res.status(404).json({erro: "province not found"});
 
-        res.json(result.rows);
+      res.status(200).json(result.rows[0].province_data)
+
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Internal server error"});
@@ -103,7 +104,8 @@ export async function perThousandByProvinceName(req, res) {
         
         if (result.rowCount === 0) return res.status(404).json({erro: "province not found"});
 
-        res.json(result.rows);
+      res.status(200).json(result.rows[0].province_data)
+
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Internal server error"});
@@ -142,7 +144,8 @@ export async function getProvincesbyYear(req, res){
         
         if (result.rowCount === 0) return res.status(404).json({erro: "province not found"});
 
-        res.json(result.rows);
+      res.status(200).json(result.rows[0].province_data)
+
     } catch (error) {
         console.error(error);
         res.status(500).json({error: "Internal server error"});
