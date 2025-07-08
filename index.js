@@ -21,7 +21,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 app.use(cors({
-  origin: ['https://moz-demog-api.vercel.app', 'http://localhost:3000']
+  origin: ['https://teu-render-app.onrender.com', 'https://moz-demog-api.vercel.app', 'http://localhost:3000']
 }))
 app.use(morgan('dev'));
 app.use(express.json())
