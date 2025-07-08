@@ -113,14 +113,14 @@
 
 <h2>Endpoints (pontos de acesso da api)</h2>
 <p>No momento, a API está hospedada em um serviço gratuito e com limitações.<br />
-A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" rel="noopener noreferrer">https://moz-demog-api.onrender.com/api</a>.</p>
+A URL base é: <a href="https://moz-demog-api.vercel.app/api" target="_blank" rel="noopener noreferrer">https://moz-demog-api.vercel.app/api</a>.</p>
 <p>Os endpoints disponíveis são:</p>
 
 <h3>GET country info</h3>
 <p>Retorna dados em JSON com informações básicas do país, no ano corrente.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/country</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -149,7 +149,7 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <p>Retorna todas as informações do país disponíveis, para todos os anos.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country/all</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/country/all</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">
@@ -184,7 +184,7 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <p>Retorna todas as informações do país disponíveis, filtrando por ano específico.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country/2025</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/country/2025</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -212,7 +212,7 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <p>Retorna dados populacionais categorizados por província. Os dados disponibilizados para as províncias são atualmente apenas para o ano de 2023.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/provinces</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -243,7 +243,7 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome contiver espaços, respeite-os (ex. Cabo Delgado, Cidade de Maputo).</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/Cidade de Maputo</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/provinces/Cidade de Maputo</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -271,7 +271,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna a estrutura percentual da população de certa província.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/Maputo/percentual-structure</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/provinces/Maputo/percentual-structure</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -291,7 +291,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna a população da província por 1000 habitantes.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/Maputo/per-thousand</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/provinces/Maputo/per-thousand</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -311,7 +311,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna todos os dados de todas as províncias para um ano específico.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/year/2023</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/provinces/year/2023</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -340,7 +340,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna todos os anos com registros populacionais de províncias.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/provinces/years</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/provinces/years</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -353,7 +353,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna indicadores populacionais de todo o país, para os anos entre 2017 e 2026 (inclusive).</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">
@@ -505,7 +505,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna indicadores populacionais do país, para um ano específico.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/2023</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/2023</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -537,7 +537,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna o índice de dependência da população para todos os anos registrados.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/dependency-rate</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/dependency-rate</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -588,7 +588,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna o índice de dependência da população para um ano específico.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/dependency-rate/2023</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/dependency-rate/2023</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -606,7 +606,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna a expectativa de vida em anos ao nascer, para todos os anos registrados.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/life-expectancy</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/life-expectancy</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -662,7 +662,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna a expectativa de vida ao nascer, para um ano específico.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/life-expectancy/2024</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/life-expectancy/2024</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -681,7 +681,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna a taxa de mortalidade infantil para todos os anos disponíveis.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/infant-mortality</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/infant-mortality</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">
@@ -730,7 +730,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Retorna a taxa de mortalidade infantil para um ano específico.</p>
 
 <h4>exemplo de requisicao:</h4>
-<pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/infant-mortality/2023</code></pre>
+<pre class="curl"><code>GET  https://moz-demog-api.vercel.app/api/indicators/infant-mortality/2023</code></pre>
 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
@@ -749,7 +749,7 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <p>Para utilizar qualquer endpoint, basta realizar uma requisição HTTP do tipo <code>GET</code> para o endereço correspondente, utilizando uma ferramenta como curl, Postman, Insomnia, ou mesmo via código JavaScript com <code>fetch()</code> ou bibliotecas como Axios.</p>
 
 <p>Exemplo básico em <code>curl</code> para obter os dados do país:</p>
-<pre class="curl"><code>curl https://moz-demog-api.onrender.com/api/country</code></pre>
+<pre class="curl"><code>curl https://moz-demog-api.vercel.app/api/country</code></pre>
 
 <p>Os dados retornados são em formato JSON, prontamente consumíveis por sistemas e aplicações.</p>
 
