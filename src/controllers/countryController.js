@@ -1,5 +1,23 @@
 import db from "../models/db.js";
 
+async function sendResponse(res, query, params = []) {
+    try {
+        const result = await db.query(query, params);
+
+        if (!result.rows.length) {
+            return res.status(404).json({ error: "Informacao nao encontrada" });
+        }
+
+        const dataArray = [];
+        dataArray.push(result.rows[0].info);
+        res.json(dataArray);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
 export async function getAllCountryData (req, res) {
     const query = `
 select json_build_object(
@@ -63,27 +81,15 @@ select json_build_object(
         
     )
 ) info;
-    `
-    try {
-       const result = await db.query(query)
+`;
+    sendResponse(res, query);
+};
 
-        if (result.rows.lenght === 0) {
-            return res.status(404).json({error: "Informacao nao encontrada"})
-        }
 
-        const dataArray = [];
-
-        dataArray.push(result.rows[0].info)
-        res.json(dataArray);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal error."});
-    }
-}
 
 export async function getCountryData(req, res){
-    const date = new Date()
-    const currentYear = date.getFullYear()
+    const date = new Date();
+    const currentYear = date.getFullYear();
     const query = `
 
     select json_build_object(
@@ -96,22 +102,9 @@ export async function getCountryData(req, res){
     )info from country_data cd, year y
     where y.year = ${currentYear}
     
-    `
+    `;
 
-    try {
-        const result = await db.query(query)
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({erro: "Data not found"})
-        }
-
-        const dataArray = [];
-
-        dataArray.push(result.rows[0].info)
-        res.json(dataArray);
-    } catch (error) {
-        res.status(500).json({erro: "Internal server error"})
-    }
+    sendResponse(res, query);
 }
 
 export async function getCountryDataPerYear(req, res) {
@@ -179,22 +172,8 @@ export async function getCountryDataPerYear(req, res) {
 
 ) info;
 
-    `
+`;
 
-    try {
-        const result = await db.query(query, [year])
-
-        if (result.rowCount === 0){
-            return res.status(404).json({info: "Data not found"})
-        }
-
-        const dataArray =[]
-        dataArray.push(result.rows[0].info)
-        res.json(dataArray);
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({erro: "Internal server error"})
-    }
+    sendResponse(res, query, [year]);
     
-}
+};
