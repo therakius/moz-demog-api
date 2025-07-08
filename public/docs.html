@@ -56,6 +56,8 @@
   code {
     font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
     font-size: 0.9rem;
+    max-height: 20vh;
+    min-height: 10vh;
   }
 
   /* Destaque do JavaScript - Pygments CSS adaptado */
@@ -123,12 +125,23 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "id": 1,
-        "capital_city": "Maputo",
-        "official_language": "Portuguese",
-        "independence_date": "1975-06-25T00:00:00.000Z",
-        "total_area_sqkm": 799380,
-        "head_of_state": "Daniel Francisco Chapo"
+        "year": 2025,
+        "head_of_state": "Daniel Francisco Chapo",
+        "list_of_provinces": [
+            "Niassa",
+            "Cabo Delgado",
+            "Nampula",
+            "Zambezia",
+            "Tete",
+            "Manica",
+            "Sofala",
+            "Inhambane",
+            "Gaza",
+            "Maputo",
+            "Cidade de Maputo"
+        ],
+        "total_area_km2": 799380,
+        "independence_date": "1975-06-25"
     }
 ]</code></pre>
 
@@ -139,24 +152,33 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/country/all</code></pre>
 
 <h4>resposta:</h4>
-<pre><code class="language-js">[
+<pre><code class="language-js">
+[
     {
-        "data": {
-            "country_info": {
-                "country_data": [
-                    {
-                        "year": 2023,
-                        "head_of_state": "Felipe Jacinto Nyusi",
-                        "id": 1,
-                        "capital_city": "Maputo",
-                        "official_language": "Portuguese",
-                        "independence_date": "1975-06-25",
-                        "total_area_sqkm": 799380
-                    },
-                    {
-                        "year": 2017,
+        "country_info": {
+            "list_of_provinces": [
+                "Niassa",
+                "Cabo Delgado",
+                "Nampula",
+                "Zambezia",
+                "Tete",
+                "Manica",
+                "Sofala",
+                "Inhambane",
+                "Gaza",
+                "Maputo",
+                "Cidade de Maputo"
+            ],
+            "capital_city": "Maputo",
+            "independence_data": "1975-06-25",
+            "official_language": "Portuguese",
+            "president_per_year": [
+                {
+                    "year": 2023,
+                    "president": "Felipe Jacinto Nyusi"
+                },
 
-                    //mais dados abaixo</code></pre>
+                //mais dados abaixo</code></pre>
 
 <h3>GET country/:ano</h3>
 <p>Retorna todas as informações do país disponíveis, filtrando por ano específico.</p>
@@ -167,20 +189,22 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "info": {
-            "country_info": {
-                "country_data": [
-                    {
-                        "year": 2025,
-                        "head_of_state": "Daniel Francisco Chapo",
-                        "id": 1,
-                        "capital_city": "Maputo",
-                        "official_language": "Portuguese",
-                        "independence_date": "1975-06-25",
-                        "total_area_sqkm": 799380
-                    }
-                ],
-                "list_of_provinces": [
+        "country_info": {
+            "country_data": [
+                {
+                    "year": 2025,
+                    "head_of_state": "Daniel Francisco Chapo"
+                }
+            ]
+        },
+        "indicators": [
+            {
+                "indicators_for_year": {
+                    "populational_indicators": {
+                        "id": 9,
+                        "total_population": 34090,
+                        "male_population": 16524,
+                        "female_population": 17566,
 
                     //mais dados abaixo</code></pre>
 
@@ -193,18 +217,26 @@ A URL base é: <a href="https://moz-demog-api.onrender.com/api" target="_blank" 
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "province_data": [
-            {
-                "province_name": "Niassa",
-                "population_per_1000hab": {
-                    "id": 1,
-                    "per_thousand_male": 1072,
-                    "per_thousand_female": 1131,
-                    "per_thousand_total": 2203,
-                    "province_id": 1
-                },
-                "population_percentual_structure": {
-                    //mais dados abaixo</code></pre>
+        "province_name": "Niassa",
+        "population_per_1000hab": {
+            "id": 1,
+            "per_thousand_male": 1072,
+            "per_thousand_female": 1131,
+            "per_thousand_total": 2203,
+            "province_id": 1
+        },
+        "population_percentual_structure": {
+            "id": 1,
+            "male_population": 6.8,
+            "female_population": 6.8,
+            "total": 6.8,
+            "province_id": 1
+        }
+    },
+    {
+        "province_name": "Cabo Delgado",
+                    //mais dados abaixo ...
+</code></pre>
 
 <h3>GET provinces/:nome</h3>
 <p>Retorna dados populacionais disponibilizados para a província, no ano de 2023, filtrando a província pelo nome.<br />
@@ -216,17 +248,24 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "province_data": [
-            {
-                "province_name": "Cidade de Maputo",
-                "population_per_1000hab": {
-                    "id": 11,
-                    "per_thousand_male": 551,
-                    "per_thousand_female": 582,
-                    "per_thousand_total": 1133,
-                    "province_id": 11
-                },
-                    //mais dados abaixo</code></pre>
+        "province_name": "Cidade de Maputo",
+        "population_per_1000hab": {
+            "id": 11,
+            "per_thousand_male": 551,
+            "per_thousand_female": 582,
+            "per_thousand_total": 1133,
+            "province_id": 11
+        },
+        "population_percentual_structure": {
+            "id": 11,
+            "male_population": 3.5,
+            "female_population": 3.5,
+            "total": 3.5,
+            "province_id": 11
+        }
+    }
+]
+</code></pre>
 
 <h3>GET provinces/:name/percentual-structure</h3>
 <p>Retorna a estrutura percentual da população de certa província.</p>
@@ -237,18 +276,14 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "province_data": [
-            {
-                "province_name": "Cidade de Maputo",
-                "population_percentual_structure": {
-                    "id": 11,
-                    "male_population": 3.5,
-                    "female_population": 3.5,
-                    "total": 3.5,
-                    "province_id": 11
-                }
-            }
-        ]
+        "province_name": "Maputo",
+        "population_percentual_structure": {
+            "id": 10,
+            "male_population": 7.6,
+            "female_population": 7.7,
+            "total": 7.6,
+            "province_id": 10
+        }
     }
 ]</code></pre>
 
@@ -261,18 +296,14 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "province_data": [
-            {
-                "province_name": "Cidade de Maputo",
-                "population_percentual_structure": {
-                    "id": 11,
-                    "male_population": 3.5,
-                    "female_population": 3.5,
-                    "total": 3.5,
-                    "province_id": 11
-                }
-            }
-        ]
+        "province_name": "Maputo",
+        "population_per_1000hab": {
+            "id": 10,
+            "per_thousand_male": 1198,
+            "per_thousand_female": 1282,
+            "per_thousand_total": 2480,
+            "province_id": 10
+        }
     }
 ]</code></pre>
 
@@ -285,19 +316,25 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "province_data": [
-            {
-                "year": 2023,
-                "province_name": "Niassa",
-                "population_per_1000hab": {
-                    "id": 1,
-                    "per_thousand_male": 1072,
-                    "per_thousand_female": 1131,
-                    "per_thousand_total": 2203,
-                    "province_id": 1
-                },
-                "population_percentual_structure": {
-                    // mais dados abaixo</code></pre>
+        "year": 2023,
+        "province_name": "Niassa",
+        "population_per_1000hab": {
+            "id": 1,
+            "per_thousand_male": 1072,
+            "per_thousand_female": 1131,
+            "per_thousand_total": 2203,
+            "province_id": 1
+        },
+        "population_percentual_structure": {
+            "id": 1,
+            "male_population": 6.8,
+            "female_population": 6.8,
+            "total": 6.8,
+            "province_id": 1
+        }
+    },
+        // mais dados abaixo
+</code></pre>
 
 <h3>GET provinces/years</h3>
 <p>Retorna todos os anos com registros populacionais de províncias.</p>
@@ -320,26 +357,149 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 
 <h4>resposta:</h4>
 <pre><code class="language-js">
-
-        "info": {
-            "indicators": [
-                {
-                    "year": 2023,
-                    "indicators_for_year": {
-                        "populational_indicators": {
-                            "id": 1,
-                            "total_population": 32420,
-                            "male_population": 15684,
-                            "female_population": 16736,
-                            "urban_percentual": 34.7,
-                            "sex_ratio": 93.7,
-                            "gross_mortality_rate": 11.7,
-                            "gross_birth_rate": 36.7,
-                            "growth_rate": 2.5,
-                            "year_id": 1,
-                            "median_age": 17.5
-
-                            //mais dados abaixo</code></pre>
+[
+    {
+        "year": 2023,
+        "indicators_for_year": {
+            "populational_indicators": {
+                "id": 1,
+                "total_population": 32420,
+                "male_population": 15684,
+                "female_population": 16736,
+                "urban_percentual": 34.7,
+                "sex_ratio": 93.7,
+                "gross_mortality_rate": 11.7,
+                "gross_birth_rate": 36.7,
+                "growth_rate": 2.5,
+                "year_id": 1,
+                "median_age": 17.5
+            },
+            "dependency_rate": {
+                "year_id": 1,
+                "total": 91.5,
+                "young": 85
+            },
+            "life_expectancy": {
+                "year_id": 1,
+                "male_life_expectancy": 53.2,
+                "female_life_expectancy": 59.1,
+                "average_life_expectancy": 56.1
+            },
+            "infant_mortality": {
+                "year_id": 1,
+                "average_infant_mortality": 63.9,
+                "male_infant_mortality": 66,
+                "female_infant_mortality": 61.8
+            }
+        }
+    },
+    {
+        "year": 2017,
+        "indicators_for_year": {
+            "populational_indicators": {
+                "id": 2,
+                "total_population": 27864,
+                "male_population": 13395,
+                "female_population": 14469,
+                "urban_percentual": 33.3,
+                "sex_ratio": 92.6,
+                "gross_mortality_rate": 12.3,
+                "gross_birth_rate": 38.6,
+                "growth_rate": 2.6,
+                "year_id": 2,
+                "median_age": 16.6
+            },
+            "dependency_rate": {
+                "year_id": 2,
+                "total": 99.6,
+                "young": 93.1
+            },
+            "life_expectancy": {
+                "year_id": 2,
+                "male_life_expectancy": 51,
+                "female_life_expectancy": 56.5,
+                "average_life_expectancy": 53.7
+            },
+            "infant_mortality": {
+                "year_id": 2,
+                "average_infant_mortality": 70.9,
+                "male_infant_mortality": 73.1,
+                "female_infant_mortality": 68.7
+            }
+        }
+    },
+    {
+        "year": 2018,
+        "indicators_for_year": {
+            "populational_indicators": {
+                "id": 3,
+                "total_population": 28586,
+                "male_population": 13758,
+                "female_population": 14828,
+                "urban_percentual": 33.6,
+                "sex_ratio": 92.8,
+                "gross_mortality_rate": 12.5,
+                "gross_birth_rate": 38.3,
+                "growth_rate": 2.6,
+                "year_id": 3,
+                "median_age": 16.7
+            },
+            "dependency_rate": {
+                "year_id": 3,
+                "total": 98.7,
+                "young": 92.2
+            },
+            "life_expectancy": {
+                "year_id": 3,
+                "male_life_expectancy": 51.4,
+                "female_life_expectancy": 56.9,
+                "average_life_expectancy": 54.1
+            },
+            "infant_mortality": {
+                "year_id": 3,
+                "average_infant_mortality": 69.7,
+                "male_infant_mortality": 71.9,
+                "female_infant_mortality": 67.5
+            }
+        }
+    },
+    {
+        "year": 2019,
+        "indicators_for_year": {
+            "populational_indicators": {
+                "id": 4,
+                "total_population": 29318,
+                "male_population": 14125,
+                "female_population": 15193,
+                "urban_percentual": 33.8,
+                "sex_ratio": 93,
+                "gross_mortality_rate": 12.4,
+                "gross_birth_rate": 37.9,
+                "growth_rate": 2.6,
+                "year_id": 4,
+                "median_age": 16.8
+            },
+            "dependency_rate": {
+                "year_id": 4,
+                "total": 97.8,
+                "young": 91.2
+            },
+            "life_expectancy": {
+                "year_id": 4,
+                "male_life_expectancy": 51.7,
+                "female_life_expectancy": 57.4,
+                "average_life_expectancy": 54.5
+            },
+            "infant_mortality": {
+                "year_id": 4,
+                "average_infant_mortality": 68.6,
+                "male_infant_mortality": 70.7,
+                "female_infant_mortality": 66.3
+            }
+        }
+    },
+  ...
+</code></pre>
 
 <h3>GET indicators/:ano</h3>
 <p>Retorna indicadores populacionais do país, para um ano específico.</p>
@@ -350,18 +510,28 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "info": {
-            "indicators": [
-                {
-                    "year": 2023,
-                    "indicators_for_year": {
-                        "populational_indicators": {
-                            "id": 1,
-                            "total_population": 32420,
-                            "male_population": 15684,
-                            "female_population": 16736,
-
-                           // mais dados abaixo</code></pre>
+        "year": 2023,
+        "indicators_for_year": {
+            "populational_indicators": {
+                "id": 1,
+                "total_population": 32420,
+                "male_population": 15684,
+                "female_population": 16736,
+                "urban_percentual": 34.7,
+                "sex_ratio": 93.7,
+                "gross_mortality_rate": 11.7,
+                "gross_birth_rate": 36.7,
+                "growth_rate": 2.5,
+                "year_id": 1,
+                "median_age": 17.5
+            },
+            "dependency_rate": {
+                "year_id": 1,
+                "total": 91.5,
+                "young": 85
+            },
+            ...
+]</code></pre>
 
 <h3>GET indicators/dependency-rate</h3>
 <p>Retorna o índice de dependência da população para todos os anos registrados.</p>
@@ -370,24 +540,49 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/dependency-rate</code></pre>
 
 <h4>resposta:</h4>
-<pre><code class="language-js">{
-    "dependency_rate": [
-        {
-            "year": 2023,
-            "indicators": {
-                "year_id": 1,
-                "total": 91.5,
-                "young": 85
-            }
-        },
-        {
-            "year": 2017,
-            "indicators": {
-                "year_id": 2,
-                "total": 99.6,
-                "young": 93.1
-
-        // mais dados abaixo</code></pre>
+<pre><code class="language-js">[
+    {
+        "year": 2023,
+        "indicators": {
+            "year_id": 1,
+            "total": 91.5,
+            "young": 85
+        }
+    },
+    {
+        "year": 2017,
+        "indicators": {
+            "year_id": 2,
+            "total": 99.6,
+            "young": 93.1
+        }
+    },
+    {
+        "year": 2018,
+        "indicators": {
+            "year_id": 3,
+            "total": 98.7,
+            "young": 92.2
+        }
+    },
+    {
+        "year": 2019,
+        "indicators": {
+            "year_id": 4,
+            "total": 97.8,
+            "young": 91.2
+        }
+    },
+    {
+        "year": 2020,
+        "indicators": {
+            "year_id": 5,
+            "total": 96.7,
+            "young": 90.1
+        }
+    },
+    ...
+]</code></pre>
 
 <h3>GET indicators/dependency-rate/:ano</h3>
 <p>Retorna o índice de dependência da população para um ano específico.</p>
@@ -396,15 +591,16 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/dependency-rate/2023</code></pre>
 
 <h4>resposta:</h4>
-<pre><code class="language-js">{
-    "dependency_rate": [
-        {
-            "year": 2023,
-            "indicators": {
-                "year_id": 1,
-                "total": 91.5,
-                "young": 85
-        // mais dados abaixo</code></pre>
+<pre><code class="language-js">[
+    {
+        "year": 2023,
+        "indicators": {
+            "year_id": 1,
+            "total": 91.5,
+            "young": 85
+        }
+    }
+]</code></pre>
 
 <h3>GET indicators/life-expectancy</h3>
 <p>Retorna a expectativa de vida em anos ao nascer, para todos os anos registrados.</p>
@@ -415,19 +611,52 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "life_expectancy": [
-            {
-                "year": 2023,
-                "life-expectancy": {
-                    "year_id": 1,
-                    "male_life_expectancy": 53.2,
-                    "female_life_expectancy": 59.1,
-                    "average_life_expectancy": 56.1
-                }
-            },
-            {
-                "year": 2017,
-        // mais dados abaixo</code></pre>
+        "year": 2023,
+        "life-expectancy": {
+            "year_id": 1,
+            "male_life_expectancy": 53.2,
+            "female_life_expectancy": 59.1,
+            "average_life_expectancy": 56.1
+        }
+    },
+    {
+        "year": 2017,
+        "life-expectancy": {
+            "year_id": 2,
+            "male_life_expectancy": 51,
+            "female_life_expectancy": 56.5,
+            "average_life_expectancy": 53.7
+        }
+    },
+    {
+        "year": 2018,
+        "life-expectancy": {
+            "year_id": 3,
+            "male_life_expectancy": 51.4,
+            "female_life_expectancy": 56.9,
+            "average_life_expectancy": 54.1
+        }
+    },
+    {
+        "year": 2019,
+        "life-expectancy": {
+            "year_id": 4,
+            "male_life_expectancy": 51.7,
+            "female_life_expectancy": 57.4,
+            "average_life_expectancy": 54.5
+        }
+    },
+    {
+        "year": 2020,
+        "life-expectancy": {
+            "year_id": 5,
+            "male_life_expectancy": 52.1,
+            "female_life_expectancy": 57.8,
+            "average_life_expectancy": 54.9
+        }
+    },
+    ...
+]</code></pre>
 
 <h3>GET indicators/life-expectancy/:ano</h3>
 <p>Retorna a expectativa de vida ao nascer, para um ano específico.</p>
@@ -438,17 +667,13 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <h4>resposta:</h4>
 <pre><code class="language-js">[
     {
-        "life_expectancy": [
-            {
-                "year": 2024,
-                "life-expectancy": {
-                    "year_id": 8,
-                    "male_life_expectancy": 54,
-                    "female_life_expectancy": 59.5,
-                    "average_life_expectancy": 56.5
-                }
-            }
-        ]
+        "year": 2024,
+        "life-expectancy": {
+            "year_id": 8,
+            "male_life_expectancy": 54,
+            "female_life_expectancy": 59.5,
+            "average_life_expectancy": 56.5
+        }
     }
 ]</code></pre>
 
@@ -459,24 +684,46 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/infant-mortality</code></pre>
 
 <h4>resposta:</h4>
-<pre><code class="language-js">{
-    "data": [
-        {
-            "infant_mortality": [
-                {
-                    "year": 2023,
-                    "infant_mortality": {
-                        "year_id": 1,
-                        "average_infant_mortality": 63.9,
-                        "male_infant_mortality": 66,
-                        "female_infant_mortality": 61.8
-                    }
-                },
-                {
-                    "year": 2017,
-                    "infant_mortality":
-
-    //mais dados abaixo
+<pre><code class="language-js">
+[
+    {
+        "year": 2023,
+        "infant_mortality": {
+            "year_id": 1,
+            "average_infant_mortality": 63.9,
+            "male_infant_mortality": 66,
+            "female_infant_mortality": 61.8
+        }
+    },
+    {
+        "year": 2017,
+        "infant_mortality": {
+            "year_id": 2,
+            "average_infant_mortality": 70.9,
+            "male_infant_mortality": 73.1,
+            "female_infant_mortality": 68.7
+        }
+    },
+    {
+        "year": 2018,
+        "infant_mortality": {
+            "year_id": 3,
+            "average_infant_mortality": 69.7,
+            "male_infant_mortality": 71.9,
+            "female_infant_mortality": 67.5
+        }
+    },
+    {
+        "year": 2019,
+        "infant_mortality": {
+            "year_id": 4,
+            "average_infant_mortality": 68.6,
+            "male_infant_mortality": 70.7,
+            "female_infant_mortality": 66.3
+        }
+    },
+    ...
+]
 </code></pre>
 
 <h3>GET indicators/infant-mortality/:ano</h3>
@@ -486,23 +733,17 @@ O nome da província deve iniciar com letra maiúscula (ex. Maputo). Se o nome c
 <pre class="curl"><code>GET  https://moz-demog-api.onrender.com/api/indicators/infant-mortality/2023</code></pre>
 
 <h4>resposta:</h4>
-<pre><code class="language-js">{
-    "data": [
-        {
-            "infant_mortality": [
-                {
-                    "year": 2023,
-                    "infant_mortality": {
-                        "year_id": 1,
-                        "average_infant_mortality": 63.9,
-                        "male_infant_mortality": 66,
-                        "female_infant_mortality": 61.8
-                    }
-                }
-            ]
+<pre><code class="language-js">[
+    {
+        "year": 2023,
+        "infant_mortality": {
+            "year_id": 1,
+            "average_infant_mortality": 63.9,
+            "male_infant_mortality": 66,
+            "female_infant_mortality": 61.8
         }
-    ]
-}</code></pre>
+    }
+]</code></pre>
 
 <h2>Como utilizar</h2>
 <p>Para utilizar qualquer endpoint, basta realizar uma requisição HTTP do tipo <code>GET</code> para o endereço correspondente, utilizando uma ferramenta como curl, Postman, Insomnia, ou mesmo via código JavaScript com <code>fetch()</code> ou bibliotecas como Axios.</p>
