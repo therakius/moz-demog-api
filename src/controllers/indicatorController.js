@@ -1,5 +1,29 @@
 import db from "../models/db.js";
 
+async function sendResponse(res, query, params = []) {
+    try {
+        const result = await db.query(query, params);
+
+        if (!result.rows.length) {
+            return res.status(404).json({ error: "Informacao nao encontrada" });
+        }
+
+        const row = result.rows[0];
+
+        const dataArray = [
+            row?.info?.indicators,
+            row?.dependency_rate,
+            row?.life_expectancy,
+            row?.infant_mortality
+        ].find(data => data !== undefined && data !== null);
+
+        res.json(dataArray);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 export async function getPopIndicators(req, res) {
 
     const query = `
@@ -21,21 +45,9 @@ export async function getPopIndicators(req, res) {
         left join dependency_rate dr on y.id = dr.year_id
         left join life_expectancy_at_birth leb on y.id = leb.year_id
         left join infant_mortality im on y.id = im.year_id
-    `
-    try {
-        const result = await db.query(query)
+    `;
 
-        if(result.rowCount === 0){
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        const dataArray =result.rows[0].info.indicators
-        res.status(200).json(dataArray);
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({info: 'internal server error'})
-    }
+    sendResponse(res, query);
     
 }
 
@@ -63,23 +75,13 @@ export async function getPopIndicatorsPerYear(req, res) {
         left join life_expectancy_at_birth leb on y.id = leb.year_id
         left join infant_mortality im on y.id = im.year_id
         where year = $1
-    `
+    `;
 
     if (year > 2026 || year < 2017) {
         return res.status(404).json({info: 'Data unavailable'})
     }
     
-    try {
-        const result = await db.query(query, [year])
-
-        if(result.rowCount === 0){
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        res.status(200).json(result.rows[0].info.indicators)
-    } catch (error) {
-        res.status(500).json({info: 'internal server error'})
-    }
+    sendResponse(res, query, [year]);
     
 }
 
@@ -95,22 +97,7 @@ export async function dependencyRate(req, res){
         join dependency_rate dr on y.id = dr.year_id;
     `
 
-    try {
-        const result = await db.query(
-            query
-        )
-
-        if (result.rowCount === 0){
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        const dataArray =result.rows[0].dependency_rate
-        res.status(200).json(dataArray);
-
-    } catch (error) {
-        console.error(error, error.message)
-        res.status(500).json({info: 'internal server error'})
-    }
+    sendResponse(res, query);
 }
 
 export async function dependencyRatePerYear(req, res) {
@@ -126,26 +113,13 @@ export async function dependencyRatePerYear(req, res) {
         join dependency_rate dr on y.id = dr.year_id
         where year = $1;
     `
-
+    ;
 
     if (year > 2026 || year < 2017) {
-        return res.status(404).json({info: 'Data unavailable'})
+        return res.status(404).json({info: 'Data unavailable'});
     }
 
-    try {
-        const result = await db.query(query, [year])
-        
-        if(result.rowCount === 0) {
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        const dataArray =result.rows[0].dependency_rate
-        res.status(200).json(dataArray);
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({info : 'internal server error'})
-    }
-    
+    sendResponse(res, query, [year]);
 }
 
 export async function lifeExpectancy(req, res){
@@ -160,19 +134,7 @@ export async function lifeExpectancy(req, res){
         join life_expectancy_at_birth leb on y.id = leb.year_id;
     `
 
-    try {
-        const result = await db.query(query)
-
-        if(result.rowCount === 0) {
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        const dataArray =result.rows[0].life_expectancy
-        res.status(200).json(dataArray);
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({info: 'internal server error'})
-    }
+    sendResponse(res, query);
 }
 
 export async function lifeExpectancyPerYear(req, res) {
@@ -194,20 +156,7 @@ export async function lifeExpectancyPerYear(req, res) {
         return res.status(404).json({info: 'Data unavailable'})
     }
 
-    try {
-        const result = await db.query(query, [year])
-
-        if(result.rowCount === 0) {
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        const dataArray =result.rows[0].life_expectancy;
-        res.status(200).json(dataArray)
-
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({info: 'internal server error'})
-    }
+    sendResponse(res, query, [year]);
 }
 
 export async function infantMortality(req, res){
@@ -222,20 +171,7 @@ export async function infantMortality(req, res){
         join infant_mortality im on y.id = im.year_id;
     `
 
-    try {
-
-        const result = await db.query(query)
-
-        if(result.rowCount === 0) {
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        res.status(200).json(result.rows[0].infant_mortality)
-        
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({info: 'internal server error'})
-    }
+    sendResponse(res, query);
 }
 
 export async function infantMortalityPerYear(req, res){
@@ -254,23 +190,10 @@ export async function infantMortalityPerYear(req, res){
         where y.year = $1;
     `
 
-        if (year > 2026 || year < 2017) {
-            return res.status(404).json({info: 'Data unavailable'})
-        }
-
-
-    try {
-
-        const result = await db.query(query, [year])
-
-        if(result.rowCount === 0) {
-            return res.status(404).json({info: 'Data not found'})
-        }
-
-        res.status(200).json(result.rows[0].infant_mortality)
-        
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({info: 'internal server error'})
+    if (year > 2026 || year < 2017) {
+        return res.status(404).json({info: 'Data unavailable'})
     }
+
+
+    sendResponse(res, query, [year]);
 }
