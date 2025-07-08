@@ -1,5 +1,26 @@
 import db from "../models/db.js";
 
+
+
+async function sendResponse(res, query, params = []) {
+    try {
+        const result = await db.query(query, params);
+
+        if (!result.rows.length) {
+            return res.status(404).json({ error: "Informacao nao encontrada" });
+        }
+
+        const row = result.rows[0];
+
+        const dataArray = [row?.province_data, row].find(data => data !== 'undefined' && data !== null)
+
+        res.json(dataArray);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 export async function getProvinces(req, res) {
 
     const query = `
@@ -16,13 +37,8 @@ export async function getProvinces(req, res) {
         left join population_per_thousand ppt on p.id = ppt.province_id
     
     `
-    try {
-        const result = await db.query(query);
-        res.status(200).json(result.rows[0].province_data)
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal server error"});
-    }
+
+    sendResponse(res, query)
 }
 
 export async function getProvincesByName (req, res) {
@@ -43,16 +59,8 @@ export async function getProvincesByName (req, res) {
         where province_name = $1
     
     `
-    try {
-        const result = await db.query(query,[name]);
+    sendResponse(res, query, [name]);
 
-        if (result.rowCount === 0) return res.status(404).json({erro: "province not found"});
-
-        res.status(200).json(result.rows[0].province_data)
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal server error"});
-    }
 }
 
 export async function percentualStructureByProvinceName(req, res) {
@@ -69,19 +77,8 @@ export async function percentualStructureByProvinceName(req, res) {
         where p.province_name = $1;
     `
 
-    try {
-        const result = await db.query(query, [name])
-        
-        if (result.rowsCount === 0) return res.status(404).json({erro: "province not found"});
+    sendResponse(res, query, [name]);
 
-      res.status(200).json(result.rows[0].province_data)
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal server error"});
-    }
-
-    
 }
 
 export async function perThousandByProvinceName(req, res) {
@@ -98,20 +95,7 @@ export async function perThousandByProvinceName(req, res) {
         where p.province_name = $1
         ;
     `
-
-    try {
-        const result = await db.query(query, [name])
-        
-        if (result.rowCount === 0) return res.status(404).json({erro: "province not found"});
-
-      res.status(200).json(result.rows[0].province_data)
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal server error"});
-    }
-
-    
+    sendResponse(res, query, [name])    
 }
 
 export async function getProvincesbyYear(req, res){
@@ -139,18 +123,7 @@ export async function getProvincesbyYear(req, res){
         if (Number(year) !== 2023) {
         return res.status(404).json({info: 'Only data from 2023 is available for provinces'})
     }
-    try {
-        const result = await db.query(query, [year])
-        
-        if (result.rowCount === 0) return res.status(404).json({erro: "province not found"});
-
-      res.status(200).json(result.rows[0].province_data)
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({error: "Internal server error"});
-    }
-
+    sendResponse(res, query, [year])
 }
 
 export async function getAvailableYears(req, res) {
