@@ -1,10 +1,9 @@
 import express from "express"
-import {getAllCountryData, getCountryData, getCountryDataPerYear} from "../controllers/countryController.js";
+import {getCountry} from "../controllers/countryController.js";
+import { getIndicators } from "../controllers/indicatorController.js";
 
 const router = express.Router();
 
-router.get("/all", getAllCountryData)
-router.get("/:year", getCountryDataPerYear)
-router.get("/", getCountryData)
+router.get("/basic-info", getCountry)
 
 export default router;
