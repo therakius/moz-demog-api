@@ -1,21 +1,18 @@
 import db from "../models/db.js";
+import {make_response} from "../../utils.js"
 
-export async function sendResponse(res, query, params = []) {
+async function sendResponse(res, query, params = []) {
     try {
         const result = await db.query(query, params);
         const rows = result.rows
 
         if (!rows.length) {
-            return res.status(404).json({ error: "Informacao nao encontrada" });
+            return res.status(404).json(make_response(false, 200, "No records found", [], {}));
         }
 
-        res.status(200).json({
-            'success': true,
-            'status': 200,
-            'message': 'General country informations found successfully',
-            'errors': [],
-            'data': rows[0]?.data
-        })
+        const response = make_response(true, 200, "General country informations found successfully", [], rows[0]?.data)
+
+        res.status(200).json(response)
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal server error" });
