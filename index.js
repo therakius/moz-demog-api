@@ -12,8 +12,8 @@ import path from "path";
 import provincesRoutes from "./src/routes/provincesRoutes.js";
 
 import countryRoutes from "./src/routes/countryRoute.js"
-
-import indicatorRoutes from "./src/routes/indicatorRoute.js"
+import populationRoutes from "./src/routes/populationRoutes.js"
+import indicatorRoutes from "./src/routes/indicatorRoutes.js"
 
 const port = 3000;
 const app = express();
@@ -25,9 +25,12 @@ app.use(morgan('dev'));
 app.use(express.json())
 
 
-app.use("/api/provinces", provincesRoutes)
-app.use("/api/country", countryRoutes)
-app.use("/api/indicators", indicatorRoutes)
+app.use("/api/country/", countryRoutes)
+
+app.use("/api/country/population", populationRoutes)
+
+app.use("/api/country/indicators", indicatorRoutes)
+
 
 app.get('/', (req, res)=>{
     res.sendFile(path.join(__dirname, 'public', 'docs.html'))
