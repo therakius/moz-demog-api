@@ -31,6 +31,8 @@ app.use("/api/country/population", populationRoutes)
 
 app.use("/api/country/indicators", indicatorRoutes)
 
+app.use("/api/country/province-info", provincesRoutes)
+
 
 app.get('/', (req, res)=>{
     res.sendFile(path.join(__dirname, 'public', 'docs.html'))
