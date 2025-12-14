@@ -8,7 +8,7 @@ async function sendResponse(res, query, params = []) {
         let data = []
 
         if (!rows.length) {
-            return res.status(404).json(make_response(false, 404, "No records found with the provided filters", [], {}));
+            return res.status(404).json(make_response(false, 404, "No records found.", [], {}));
         }
 
         for (let i in rows){
@@ -53,7 +53,7 @@ export async function getPopulationData(req, res) {
 
         let selectFields = `
             'year', y.year,
-            'province_name', p.province_name,
+            'province_name', p.province_name, 'population_density', p.population_density,
             'population_per_thousand',
                 JSON_BUILD_OBJECT(
                     'total', ppt.per_thousand_total,
