@@ -1,5 +1,10 @@
 import db from "../models/db.js";
 import { make_response } from "../../utils.js";
+import {
+  getProvinceListQuery,
+  getProvinceQuery,
+  getProvincesForValidate,
+} from "../models/provinceModel.js";
 
 async function sendResponse(res, query, params = []) {
   try {
@@ -11,11 +16,12 @@ async function sendResponse(res, query, params = []) {
         .json(make_response(false, 404, "No records found."));
     }
 
-    let result_final = []
+    let result_final = [];
 
-    result.rows.forEach(r => {
-        result_final.push(r.data)
-    })
+    result.rows.forEach((r) => {
+      result_final.push(r.data);
+    });
+
     const data = result_final;
 
     res
@@ -30,38 +36,33 @@ async function sendResponse(res, query, params = []) {
 }
 
 export async function getProvinces(req, res) {
-  let p_name = req.query.p_name;
-
-  let whereClause = "";
-  let params = []
-  let query = `
-        select json_build_object(
-        'year', y.year,
-        'province_name', p.province_name,
-        'population_density', p.population_density,
-        'area_in_sqkm', p.area_in_sqkm,
-        'data_state', y.data_state
-        ) as data
-        from provinces p
-        inner join year y on y.id = p.year_id
-        where 1 = 1   
-    `;
-
-  if (p_name) {
-    p_name = p_name.toLowerCase();
-
-    whereClause+= ` and lower(p.province_name) = $1`
-    params.push(p_name)
-    query += whereClause
-  }
+  const { query, params } = getProvinceQuery(req.query);
 
   sendResponse(res, query, params);
 }
 
-export function getProvinceList(req, res){
-    const query = `select json_build_object(
-	'provinces', json_agg(province_name) ) data
-	from provinces`
+export function getProvinceList(req, res) {
+  const query = getProvinceListQuery();
 
-    sendResponse(res, query)
+  sendResponse(res, query);
+}
+
+export function provincesQuery(province) {
+  const { query, params } = getProvincesForValidate(province);
+
+  return listOfProvinces(query, params);
+}
+
+async function listOfProvinces(query, params) {
+  try {
+    const result = await db.query(query, params);
+
+    console.log(result.rowCount);
+    if (result.rowCount == 0) return 0;
+
+    return 1;
+  } catch (error) {
+    console.log(error.message);
+    return error.message;
+  }
 }
