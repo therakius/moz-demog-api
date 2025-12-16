@@ -1,6 +1,7 @@
 import db from "../models/db.js";
 import { make_response } from "../../utils.js";
 import { getPopulationQuery } from "../models/populationModel.js";
+import { validatePopulationFields } from "../validators.js";
 
 async function sendResponse(res, query, params = []) {
   try {
@@ -44,7 +45,15 @@ async function sendResponse(res, query, params = []) {
 }
 
 export async function getPopulationData(req, res) {
-    
+  
+  const validData = await validatePopulationFields(req)
+  
+  console.log(validData)
+
+  if (validData) {
+    return res.status(400).json(validData)
+  }
+
   const { query, params } = getPopulationQuery(req.query);
 
   return sendResponse(res, query, params);

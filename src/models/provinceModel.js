@@ -34,3 +34,10 @@ export function getProvinceListQuery(){
 
     return query
 }
+
+export function getProvincesForValidate(province){
+  const params = [province]
+  const query = "select province_name from provinces where lower(province_name) = $1"
+
+  return {"query": query, "params": params}
+}
