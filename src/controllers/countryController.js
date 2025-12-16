@@ -1,6 +1,7 @@
 import db from "../models/db.js";
 import {make_response} from "../../utils.js"
 import { makeCountryQuery } from "../models/countryModel.js";
+import { validateCountryFields } from "../validators.js";
 
 async function sendResponse(res, query, params = []) {
     try {
@@ -22,8 +23,14 @@ async function sendResponse(res, query, params = []) {
 
 
 export async function getCountry(req, res){
-    const date = new Date();
+
+    const validData = validateCountryFields(req)
     
+    if(validData){
+        return res.status(400).json(validData)
+    }
+
+    const date = new Date();
     const currentYear = date.getFullYear();
 
     const year = req.query.year || currentYear;
