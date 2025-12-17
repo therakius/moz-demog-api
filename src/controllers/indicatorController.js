@@ -1,6 +1,7 @@
 import db from "../models/db.js";
 import { make_response } from "../../utils.js";
 import { makeIndicatorsQuery } from "../models/indicatorModel.js";
+import { validateIndicatorsfields } from "../validators.js";
 
 async function sendResponse(res, query, params = []) {
   try {
@@ -51,6 +52,12 @@ async function sendResponse(res, query, params = []) {
 }
 
 export function getIndicators(req, res) {
+
+  const isValid = validateIndicatorsfields(req)
+
+  if(isValid){
+    return res.status(400).json(isValid)
+  }
 
   const {query, params}= makeIndicatorsQuery(req.query);
   

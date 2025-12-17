@@ -88,17 +88,6 @@ export function makeIndicatorsQuery(requestQuery) {
   }
 
   if (y_start && y_end) {
-    if (y_start >= y_end) {
-      errors.push({
-        y_start: "y_start must be less than y_end",
-      });
-      return res
-        .status(400)
-        .json(
-          make_response(false, 400, "Please verify your inputs", errors, {})
-        );
-    }
-
     fromWhere += ` and y.year between $1 and $2`;
     params.push(y_start, y_end);
   }
@@ -106,16 +95,6 @@ export function makeIndicatorsQuery(requestQuery) {
   if (y_start && !y_end) {
     fromWhere += `and y.year = $1`;
     params.push(y_start);
-  }
-
-  if (!y_start && y_end) {
-    errors.push({
-      y_end: "y_end must only be used if y_start is present",
-    });
-
-    return res
-      .status(400)
-      .json(make_response(false, 400, "Please verify your inputs", errors, {}));
   }
 
   extras = extras.join(", ");

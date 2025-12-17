@@ -5,6 +5,7 @@ import {
   getProvinceQuery,
   getProvincesForValidate,
 } from "../models/provinceModel.js";
+import { validateprovincesField } from "../validators.js";
 
 async function sendResponse(res, query, params = []) {
   try {
@@ -36,6 +37,13 @@ async function sendResponse(res, query, params = []) {
 }
 
 export async function getProvinces(req, res) {
+
+  const isValid = await validateprovincesField(req)
+
+  if (isValid) {
+    return res.status(400).json(isValid)
+  }
+
   const { query, params } = getProvinceQuery(req.query);
 
   sendResponse(res, query, params);
