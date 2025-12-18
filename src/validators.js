@@ -53,8 +53,12 @@ export async function validatePopulationFields(req) {
         field: "fields must not contain special characters",
       });
     }
-    if (!allowedFields.includes(field)) console.log(field);
-    Object.assign(errors, { [field]: `field '${field} is not allowed.` }); // uso de compute property name para as chaves dinamicas em objectos
+    if (!allowedFields.includes(field)) {
+
+      console.log(field);
+      Object.assign(errors, { [field]: `field '${field} is not allowed.` }); // uso de compute property name para as chaves dinamicas em objectos
+
+    }
   }
 
   if (year) {
