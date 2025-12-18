@@ -1,12 +1,11 @@
 
-export function make_response(success, status, message, errors=[], data) {
+export function make_response(success, status, message, errors=[], data, metadata) {
     return {
-        'success': success,
-        'status': status,
-        'message': message,
-        'errors': errors,
-        'data': data
-
-
+        success,
+        status,
+        message,
+        errors,
+        data,
+        metadata
     }
 }
