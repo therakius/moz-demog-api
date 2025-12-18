@@ -24,14 +24,14 @@ app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json())
 
+// versao 1
+app.use("/api/v1/country/", countryRoutes)
 
-app.use("/api/country/", countryRoutes)
+app.use("/api/v1/country/population", populationRoutes)
 
-app.use("/api/country/population", populationRoutes)
+app.use("/api/v1/country/indicators", indicatorRoutes)
 
-app.use("/api/country/indicators", indicatorRoutes)
-
-app.use("/api/country/province-info", provincesRoutes)
+app.use("/api/v1/country/province-info", provincesRoutes)
 
 
 app.get('/', (req, res)=>{
