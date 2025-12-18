@@ -17,8 +17,6 @@ export function validateCountryFields(req) {
         return make_response(false, 400, message, errors, {});
       }
 
-      console.log(Number(year));
-
       if (Number(year) < 2017 || Number(year) > 2026) {
         Object.assign(errors, {
           year: "Year range is only between 2017 and 2026.",
@@ -27,7 +25,6 @@ export function validateCountryFields(req) {
       }
     }
   } catch (error) {
-    console.log(`error: ${error.message}`);
     return make_response(
       false,
       500,
@@ -55,7 +52,6 @@ export async function validatePopulationFields(req) {
     }
     if (!allowedFields.includes(field)) {
 
-      console.log(field);
       Object.assign(errors, { [field]: `field '${field} is not allowed.` }); // uso de compute property name para as chaves dinamicas em objectos
 
     }
@@ -86,9 +82,7 @@ export async function validatePopulationFields(req) {
       }
     }
 
-    console.log(Object.keys(errors).length);
     if (Object.keys(errors).length > 0) {
-      console.log(make_response(false, 400, message, errors, {}));
       return make_response(false, 400, message, errors, {});
     }
   }

@@ -65,7 +65,6 @@ async function listOfProvinces(query, params) {
   try {
     const result = await db.query(query, params);
 
-    console.log(result.rowCount);
     if (result.rowCount == 0) return 0;
 
     return 1;
