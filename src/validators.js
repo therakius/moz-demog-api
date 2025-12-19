@@ -89,7 +89,7 @@ export async function validatePopulationFields(req) {
 }
 
 export function validateIndicatorsfields(req) {
-  const allowedFields = ["p_structure", "d_rate", "p_thousand", "i_mortality"];
+  const allowedFields = ["p_structure", "d_rate", "p_thousand", "i_mortality", "l_expectancy"];
 
   let { fields, y_start, y_end } = req.query;
 

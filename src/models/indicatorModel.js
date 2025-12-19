@@ -61,11 +61,12 @@ export function makeIndicatorsQuery(requestQuery, per_page, offset) {
     fields.forEach((field) => {
       query = `SELECT 
                     JSON_BUILD_OBJECT(
+                    'year', Y.YEAR,
                 `;
 
       if (field === "p_thousand") {
         extras.push(
-          `'year', Y.YEAR,'total_population', CPI.TOTAL_POPULATION,'male', CPI.MALE_POPULATION,'female', CPI.FEMALE_POPULATION,'urban_percent', CPI.URBAN_PERCENTUAL,'sex_raio', CPI.SEX_RATIO,'median_age', CPI.MEDIAN_AGE,'gross_birth_rate', CPI.GROSS_BIRTH_RATE,'gross_mortality_rate', CPI.GROSS_MORTALITY_RATE,'growth_rate', CPI.GROWTH_RATE`
+          `'total_population', CPI.TOTAL_POPULATION,'male', CPI.MALE_POPULATION,'female', CPI.FEMALE_POPULATION,'urban_percent', CPI.URBAN_PERCENTUAL,'sex_raio', CPI.SEX_RATIO,'median_age', CPI.MEDIAN_AGE,'gross_birth_rate', CPI.GROSS_BIRTH_RATE,'gross_mortality_rate', CPI.GROSS_MORTALITY_RATE,'growth_rate', CPI.GROWTH_RATE`
         );
       }
       if (field === "d_rate") {
