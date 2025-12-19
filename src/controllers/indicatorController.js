@@ -1,9 +1,13 @@
 import db from "../models/db.js";
 import { make_response } from "../../utils.js";
-import { makeIndicatorsQuery } from "../models/indicatorModel.js";
-import { validateIndicatorsfields } from "../validators.js";
+import {
+  makeIndicatorsCountQuery,
+  makeIndicatorsQuery,
+} from "../models/indicatorModel.js";
+import { validateIndicatorsfields, validatePaginationInputs} from "../validators.js";
+import { paginateResults } from "../paginator.js";
 
-async function sendResponse(res, query, params = []) {
+async function sendResponse(res, query, params = [], paginate) {
   try {
     const result = await db.query(query, params);
     const rows = result.rows;
@@ -32,7 +36,8 @@ async function sendResponse(res, query, params = []) {
       200,
       "Population indicators data retrieved successfully.",
       [],
-      data
+      data,
+      paginate
     );
 
     res.status(200).json(response);
@@ -51,15 +56,54 @@ async function sendResponse(res, query, params = []) {
   }
 }
 
-export function getIndicators(req, res) {
+export async function getIndicators(req, res) {
+  let { page, per_page } = req.query;
 
-  const isValid = validateIndicatorsfields(req)
+  const validPaginateParams = validatePaginationInputs(page, per_page)
 
-  if(isValid){
-    return res.status(400).json(isValid)
+  if (validPaginateParams) {
+    return res.status(400).json(validPaginateParams)
+  } 
+
+  const isValid = validateIndicatorsfields(req);
+
+  if (isValid) {
+    return res.status(400).json(isValid);
   }
 
-  const {query, params}= makeIndicatorsQuery(req.query);
-  
-  sendResponse(res, query, params);
+  page = parseInt(page);
+  per_page = parseInt(per_page);
+
+  if (!page || page < 1) page = 1;
+  if (!per_page || per_page < 1) per_page = 5;
+
+  const offset = (page - 1) * per_page;
+
+  const { iQueryC, iParamsC } = makeIndicatorsCountQuery(req);
+
+  const totalCount = await countIndicators(iQueryC, iParamsC);
+
+  if (totalCount === "error") {
+    return res
+      .status(500)
+      .json(
+        make_response(false, 500, "Ther was an internal server error", {}, {})
+      );
+  }
+
+  const paginated = paginateResults(page, per_page, totalCount);
+
+  const { query, params } = makeIndicatorsQuery(req.query, per_page, offset);
+
+  sendResponse(res, query, params, paginated);
+}
+
+async function countIndicators(query, params) {
+  try {
+    const totalCount = await db.query(query, params);
+
+    return totalCount.rows[0].total;
+  } catch (error) {
+    return "error";
+  }
 }

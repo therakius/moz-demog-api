@@ -1,28 +1,9 @@
-export function getPopulationQuery(requestQuery, res) {
+export function getPopulationQuery(requestQuery, per_page, offset) {
   const { year, p_name, field } = requestQuery;
 
-  //   if (year && Number(year) !== 2023) {
-  //     return res.status(400)
-  //       .json(
-  //         make_response(
-  //           false,
-  //           400,
-  //           "Only population data from 2023 is available",
-  //           { year },
-  //           {}
-  //         )
-  //       );
-  //   }
-
-  const allowedFields = ["p_thousand", "p_structure"];
   let selectedField = null;
 
   if (field) {
-    // if (!allowedFields.includes(field)) {
-    //   return res
-    //     .status(400)
-    //     .json(make_response(false, 400, "Invalid field filter", { field }, {}));
-    // }
     selectedField = field;
   }
 
@@ -91,5 +72,45 @@ export function getPopulationQuery(requestQuery, res) {
     idx++;
   }
 
+  params.push(per_page, offset)
+  query += ` ORDER BY Y.YEAR ASC LIMIT $${params.length - 1} OFFSET $${
+  params.length
+  }`;
+
+
   return { query: query, params: params };
+}
+
+
+export function makePopulationCountQuery(req) {
+  const { year, p_name } = req.query;
+
+  let pQueryC = `SELECT
+    count(*)::int AS total
+    FROM
+      PUBLIC.YEAR Y
+      INNER JOIN PROVINCES P ON P.YEAR_ID = Y.ID
+      INNER JOIN POPULATION_PER_THOUSAND PPT ON PPT.PROVINCE_ID = P.ID
+      INNER JOIN POPULATION_PERCENTUAL_STRUCTURE PPS ON PPS.PROVINCE_ID = P.ID
+    WHERE
+      1=1
+  `;
+
+  const pParamsC = [];
+  let paramIndex = 1;
+
+  if (year) {
+    pQueryC += ` AND y.year = $${paramIndex}`;
+    pParamsC.push(year);
+    paramIndex++;
+  }
+
+  if (p_name) {
+    pQueryC += ` AND lower(province_name) = $${paramIndex}`;
+    pParamsC.push(p_name);
+    paramIndex++;
+  }
+
+  console.log(pParamsC)
+  return { pQueryC, pParamsC };
 }

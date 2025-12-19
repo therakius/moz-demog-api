@@ -1,4 +1,4 @@
-export function makeIndicatorsQuery(requestQuery) {
+export function makeIndicatorsQuery(requestQuery, per_page, offset) {
   let { y_start, y_end, fields } = requestQuery;
 
   let query = `
@@ -53,18 +53,20 @@ export function makeIndicatorsQuery(requestQuery) {
             WHERE 1 = 1
     `;
 
-  let errors = [];
   let params = [];
+
+  // manter lógica de fields extras
   if (fields) {
     fields = JSON.parse(fields);
     fields.forEach((field) => {
       query = `SELECT 
                     JSON_BUILD_OBJECT(
+                    'year', Y.YEAR,
                 `;
 
       if (field === "p_thousand") {
         extras.push(
-          `'year', Y.YEAR,'total_population', CPI.TOTAL_POPULATION,'male', CPI.MALE_POPULATION,'female', CPI.FEMALE_POPULATION,'urban_percent', CPI.URBAN_PERCENTUAL,'sex_raio', CPI.SEX_RATIO,'median_age', CPI.MEDIAN_AGE,'gross_birth_rate', CPI.GROSS_BIRTH_RATE,'gross_mortality_rate', CPI.GROSS_MORTALITY_RATE,'growth_rate', CPI.GROWTH_RATE`
+          `'total_population', CPI.TOTAL_POPULATION,'male', CPI.MALE_POPULATION,'female', CPI.FEMALE_POPULATION,'urban_percent', CPI.URBAN_PERCENTUAL,'sex_raio', CPI.SEX_RATIO,'median_age', CPI.MEDIAN_AGE,'gross_birth_rate', CPI.GROSS_BIRTH_RATE,'gross_mortality_rate', CPI.GROSS_MORTALITY_RATE,'growth_rate', CPI.GROWTH_RATE`
         );
       }
       if (field === "d_rate") {
@@ -87,21 +89,61 @@ export function makeIndicatorsQuery(requestQuery) {
     });
   }
 
+  // filtros de anos
   if (y_start && y_end) {
-    fromWhere += ` and y.year between $1 and $2`;
+    fromWhere += ` and y.year between $${params.length + 1} and $${
+      params.length + 2
+    }`;
     params.push(y_start, y_end);
   }
 
   if (y_start && !y_end) {
-    fromWhere += `and y.year = $1`;
+    fromWhere += ` and y.year = $${params.length + 1}`;
     params.push(y_start);
   }
 
-  extras = extras.join(", ");
-  extras += ")";
-  query += extras;
+  // juntar extras
+  if (extras.length > 0) {
+    extras = extras.join(", ");
+    extras += ")";
+    query += extras;
+  } else {
+    query += ")"; // fecha JSON_BUILD_OBJECT principal
+  }
 
-  query += fromWhere + " order by y.year asc";
+  // juntar fromWhere
+  query += fromWhere;
 
-  return {"query": query, "params": params}
+  // adicionar paginação
+  params.push(per_page, offset);
+  query += ` ORDER BY Y.YEAR ASC LIMIT $${params.length - 1} OFFSET $${
+    params.length
+  }`;
+
+  return { query, params };
+}
+
+export function makeIndicatorsCountQuery(req) {
+  const { y_start, y_end } = req.query;
+
+  let iQueryC = `
+      SELECT COUNT(*)::int AS total
+      FROM PUBLIC.YEAR Y
+      INNER JOIN COUNTRY_POP_INDICATORS CPI ON CPI.YEAR_ID = Y.ID
+      WHERE 1 = 1
+  `;
+
+  let iParamsC = [];
+
+  if (y_start && y_end) {
+    iQueryC += ` AND y.year BETWEEN $1 AND $2`;
+    iParamsC.push(y_start, y_end);
+  }
+
+  if (y_start && !y_end) {
+    iQueryC += ` AND y.year = $1`;
+    iParamsC.push(y_start);
+  }
+
+  return { iQueryC, iParamsC };
 }
