@@ -1,9 +1,10 @@
-export function getProvinceQuery(requestQuery) {
+export function getProvinceQuery(requestQuery, per_page, offset) {
   let p_name = requestQuery.p_name;
-
   let whereClause = "";
 
   let params = [];
+
+  let paramIndex = 1
 
   let query = `
         select json_build_object(
@@ -21,12 +22,46 @@ export function getProvinceQuery(requestQuery) {
   if (p_name) {
     p_name = p_name.toLowerCase();
 
-    whereClause += ` and lower(p.province_name) = $1`;
+    whereClause += ` and lower(p.province_name) = $${paramIndex}`;
     params.push(p_name);
     query += whereClause;
+    paramIndex++;
   }
+
+  params.push(per_page, offset)
+  query+=` order by p.id desc limit $${params.length -1} offset $${params.length}`;
+
   return { query: query, params: params };
 }
+
+
+export function getProvinceCountQuery(req){
+  const p_name = req.query.p_name;
+
+  let pQueryCount = `
+    SELECT
+      count(*)::int as total
+    FROM
+      PROVINCES P
+      INNER JOIN YEAR Y ON Y.ID = P.YEAR_ID
+    WHERE
+	1 = 1
+  `
+
+  let pQueryParams = [];
+  let paramIndex = 1;
+
+  if(p_name) {
+    pQueryCount +=` and lower(province_name) = $${paramIndex}`
+    pQueryParams.push(p_name)
+    paramIndex++
+  }
+
+
+  return {pQueryCount, pQueryParams}
+}
+
+
 
 export function getProvinceListQuery(){
 
