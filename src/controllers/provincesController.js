@@ -6,7 +6,7 @@ import {
   getProvincesForValidate,
   getProvinceCountQuery
 } from "../models/provinceModel.js";
-import { validateprovincesField } from "../validators.js";
+import { validateprovincesField, validatePaginationInputs } from "../validators.js";
 
 import { paginateResults } from "../paginator.js";
 
@@ -41,7 +41,13 @@ async function sendResponse(res, query, params = [], paginated) {
 
 export async function getProvinces(req, res) {
 
-  let {page, per_page} = req.query;
+    let { page, per_page } = req.query;
+  
+    const validPaginateParams = validatePaginationInputs(page, per_page)
+  
+    if (validPaginateParams) {
+      return res.status(400).json(validPaginateParams)
+    } 
 
   const isValid = await validateprovincesField(req);
 

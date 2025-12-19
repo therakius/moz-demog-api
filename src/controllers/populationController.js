@@ -1,7 +1,7 @@
 import db from "../models/db.js";
 import { make_response } from "../../utils.js";
 import { getPopulationQuery, makePopulationCountQuery } from "../models/populationModel.js";
-import { validatePopulationFields } from "../validators.js";
+import { validatePopulationFields, validatePaginationInputs } from "../validators.js";
 import { paginateResults } from "../paginator.js";
 async function sendResponse(res, query, params = [], paginated) {
   try {
@@ -44,7 +44,13 @@ async function sendResponse(res, query, params = [], paginated) {
 }
 
 export async function getPopulationData(req, res) {
-  let { page, per_page } = req.query;
+    let { page, per_page } = req.query;
+  
+    const validPaginateParams = validatePaginationInputs(page, per_page)
+  
+    if (validPaginateParams) {
+      return res.status(400).json(validPaginateParams)
+    } 
 
   const validData = await validatePopulationFields(req);
 

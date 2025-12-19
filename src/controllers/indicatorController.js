@@ -4,7 +4,7 @@ import {
   makeIndicatorsCountQuery,
   makeIndicatorsQuery,
 } from "../models/indicatorModel.js";
-import { validateIndicatorsfields } from "../validators.js";
+import { validateIndicatorsfields, validatePaginationInputs} from "../validators.js";
 import { paginateResults } from "../paginator.js";
 
 async function sendResponse(res, query, params = [], paginate) {
@@ -57,13 +57,19 @@ async function sendResponse(res, query, params = [], paginate) {
 }
 
 export async function getIndicators(req, res) {
+  let { page, per_page } = req.query;
+
+  const validPaginateParams = validatePaginationInputs(page, per_page)
+
+  if (validPaginateParams) {
+    return res.status(400).json(validPaginateParams)
+  } 
+
   const isValid = validateIndicatorsfields(req);
 
   if (isValid) {
     return res.status(400).json(isValid);
   }
-
-  let { page, per_page } = req.query;
 
   page = parseInt(page);
   per_page = parseInt(per_page);

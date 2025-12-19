@@ -239,3 +239,44 @@ export async function validateprovincesField(req) {
     return make_response(false, 400, message, errors, {});
   }
 }
+
+export function validatePaginationInputs(page, per_page){
+
+  let errors = {}
+  
+  const message = "Invalid input parameters";
+
+  if (page != null) {
+    
+    errors.page ??=[]
+
+    if (isNaN(page)) errors.page.push("Must be a numeric value.")
+
+    if(regex.test(page)) errors.page.push("Must not contain special characters")
+
+    if(Number(page) === 0) errors.page.push("Must be greater than zero")
+
+    if(Number(page) > 50) errors.page.push("Must be less than 50.")
+      
+    if(errors.page.length === 0) delete errors.page
+  }
+
+  if(per_page != null) {
+    
+    errors.per_page ??=[]
+
+    if (isNaN(per_page)) errors.per_page.push("Must be a numeric value.")
+
+    if(regex.test(per_page)) errors.per_page.push("Must not contain special characters")
+
+    if(Number(per_page) === 0) errors.per_page.push("Must be greater than zero")
+
+    if(Number(per_page) > 50) errors.per_page.push("Must be less than 50.")
+      
+    if(errors.per_page.length === 0) delete errors.per_page  
+  }
+
+
+  if(Object.keys(errors).length > 0) return make_response(false, 400, message, errors, {})
+
+}
