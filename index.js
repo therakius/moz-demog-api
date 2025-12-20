@@ -53,13 +53,13 @@ app.use((req, res, next) => {
 
 
 // versao 1
-app.use("/api/v1/country/", countryRoutes)
+app.use("/v1/country", countryRoutes)
 
-app.use("/api/v1/country/population", populationRoutes)
+app.use("/v1/population", populationRoutes)
 
-app.use("/api/v1/country/indicators", indicatorRoutes)
+app.use("/v1/indicators", indicatorRoutes)
 
-app.use("/api/v1/country/province-info", provincesRoutes)
+app.use("/v1/province-info", provincesRoutes)
 
 
 app.get('/', (req, res)=>{

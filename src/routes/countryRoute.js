@@ -3,6 +3,6 @@ import {getCountry} from "../controllers/countryController.js";
 
 const router = express.Router();
 
-router.get("/basic-info", getCountry)
+router.get("/", getCountry)
 
 export default router;
