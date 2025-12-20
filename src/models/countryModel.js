@@ -5,7 +5,7 @@ export function makeCountryQuery(year){
             JSON_BUILD_OBJECT(
                     'country_name',
                     'mozambique',
-                    'current_president', (select Y.HEAD_OF_STATE from public.year y where y.year = ${year}),
+                    'head_of_state', (select Y.HEAD_OF_STATE from public.year y where y.year = ${year}),
                     'area',
                     CD.TOTAL_AREA_SQKM,
                     'capital_city',
@@ -13,7 +13,8 @@ export function makeCountryQuery(year){
                     'independence_date',
                     CD.INDEPENDENCE_DATE,
                     'official_language',
-                    CD.OFFICIAL_LANGUAGE
+                    CD.OFFICIAL_LANGUAGE,
+                    'year', (select y.year from public.year y where y.year = ${year})
             ) as data
         FROM
             COUNTRY_DATA AS CD
