@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+import { make_response } from "./utils.js";
 
 import express from "express"
 import morgan from "morgan";
@@ -7,6 +8,8 @@ import cors from "cors"
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path'; // <- AQUI estás a importar dirname
 import path from "path";
+
+import rateLimit from "express-rate-limit";
 
 import provincesRoutes from "./src/routes/provincesRoutes.js";
 
@@ -18,6 +21,22 @@ const port = 3000;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json(
+      make_response(false, 429, "Too many requests, please try again later", {
+        "description": "RATE_LIMIT_EXCEEDED",
+        "retry_after": 60
+      }, {})
+    )
+  }
+});
+
 
 app.use(cors())
 app.use(morgan('dev'));
@@ -50,7 +69,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
+app.use(apiLimiter)
 
 // versao 1
 app.use("/v1/country", countryRoutes)
