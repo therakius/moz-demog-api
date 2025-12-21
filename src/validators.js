@@ -38,7 +38,7 @@ export function validateCountryFields(req) {
 export async function validatePopulationFields(req) {
   const allowedFields = ["p_thousand", "p_structure"];
 
-  const { field, year, p_name } = req.query;
+  let { field, year, p_name } = req.query;
 
   const errors = {};
 
@@ -51,9 +51,7 @@ export async function validatePopulationFields(req) {
       });
     }
     if (!allowedFields.includes(field)) {
-
       Object.assign(errors, { [field]: `field '${field} is not allowed.` }); // uso de compute property name para as chaves dinamicas em objectos
-
     }
   }
 
@@ -67,29 +65,37 @@ export async function validatePopulationFields(req) {
         year: `Only data from 2023 is available for this request`,
       });
     }
+  }
 
-    if (p_name) {
-      if (regex.test(p_name)) {
-        return make_response(false, 400, {
-          p_name: "fields must not contain special characters",
-        });
-      }
-
-      const pExists = await provincesQuery(p_name);
-
-      if (pExists === 0) {
-        Object.assign(errors, { [p_name]: `Unknown province -- ${p_name}.` });
-      }
+  if (p_name != null) {
+    console.log(p_name.toLowerCase());
+    p_name = p_name.toLowerCase();
+    if (regex.test(p_name)) {
+      return make_response(false, 400, {
+        p_name: "fields must not contain special characters",
+      });
     }
 
-    if (Object.keys(errors).length > 0) {
-      return make_response(false, 400, message, errors, {});
+    const pExists = await provincesQuery(p_name);
+
+    if (pExists === 0) {
+      Object.assign(errors, { 'p_name': `Unknown province '${p_name}'.` });
     }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return make_response(false, 400, message, errors, {});
   }
 }
 
 export function validateIndicatorsfields(req) {
-  const allowedFields = ["p_structure", "d_rate", "p_thousand", "i_mortality", "l_expectancy"];
+  const allowedFields = [
+    "p_structure",
+    "d_rate",
+    "p_thousand",
+    "i_mortality",
+    "l_expectancy",
+  ];
 
   let { fields, y_start, y_end } = req.query;
 
@@ -240,43 +246,42 @@ export async function validateprovincesField(req) {
   }
 }
 
-export function validatePaginationInputs(page, per_page){
+export function validatePaginationInputs(page, per_page) {
+  let errors = {};
 
-  let errors = {}
-  
   const message = "Invalid input parameters";
 
   if (page != null) {
-    
-    errors.page ??=[]
+    errors.page ??= [];
 
-    if (isNaN(page)) errors.page.push("Must be a numeric value.")
+    if (isNaN(page)) errors.page.push("Must be a numeric value.");
 
-    if(regex.test(page)) errors.page.push("Must not contain special characters")
+    if (regex.test(page))
+      errors.page.push("Must not contain special characters");
 
-    if(Number(page) === 0) errors.page.push("Must be greater than zero")
+    if (Number(page) === 0) errors.page.push("Must be greater than zero");
 
-    if(Number(page) > 50) errors.page.push("Must be less than 50.")
-      
-    if(errors.page.length === 0) delete errors.page
+    if (Number(page) > 50) errors.page.push("Must be less than 50.");
+
+    if (errors.page.length === 0) delete errors.page;
   }
 
-  if(per_page != null) {
-    
-    errors.per_page ??=[]
+  if (per_page != null) {
+    errors.per_page ??= [];
 
-    if (isNaN(per_page)) errors.per_page.push("Must be a numeric value.")
+    if (isNaN(per_page)) errors.per_page.push("Must be a numeric value.");
 
-    if(regex.test(per_page)) errors.per_page.push("Must not contain special characters")
+    if (regex.test(per_page))
+      errors.per_page.push("Must not contain special characters");
 
-    if(Number(per_page) === 0) errors.per_page.push("Must be greater than zero")
+    if (Number(per_page) === 0)
+      errors.per_page.push("Must be greater than zero");
 
-    if(Number(per_page) > 50) errors.per_page.push("Must be less than 50.")
-      
-    if(errors.per_page.length === 0) delete errors.per_page  
+    if (Number(per_page) > 50) errors.per_page.push("Must be less than 50.");
+
+    if (errors.per_page.length === 0) delete errors.per_page;
   }
 
-
-  if(Object.keys(errors).length > 0) return make_response(false, 400, message, errors, {})
-
+  if (Object.keys(errors).length > 0)
+    return make_response(false, 400, message, errors, {});
 }
