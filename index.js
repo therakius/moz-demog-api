@@ -13,20 +13,16 @@ import Yaml from "yamljs";
 import rateLimit from "express-rate-limit";
 
 import provincesRoutes from "./src/routes/provincesRoutes.js";
-
 import countryRoutes from "./src/routes/countryRoute.js"
 import populationRoutes from "./src/routes/populationRoutes.js"
 import indicatorRoutes from "./src/routes/indicatorRoutes.js"
 
-const port = 3000;
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const swaggerPath = path.join(__dirname, 'swagger.yml');
 const swaggerDoc = Yaml.load(swaggerPath);
-
-
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -43,14 +39,12 @@ const apiLimiter = rateLimit({
   }
 });
 
-
 app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json())
 
 app.use((req, res, next) => {
   const originalSend = res.send;
-
   let responseBody;
 
   res.send = function (body) {
@@ -67,7 +61,6 @@ app.use((req, res, next) => {
         request_query: req.query,
         response: responseBody
       };
-
       console.log(log);
     }
   });
@@ -84,23 +77,27 @@ app.use((req, res, next) => {
 
 app.set('trust proxy', 1);
 
-// versao 1
 app.use("/v1/country", countryRoutes)
-
 app.use("/v1/population", populationRoutes)
-
 app.use("/v1/indicators", indicatorRoutes)
-
 app.use("/v1/province-info", provincesRoutes)
 
 app.use(
   '/v1/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerDoc, {
-    customSiteTitle: 'Documentation'
+    customSiteTitle: 'Documentation',
+    customCss: '.swagger-ui .topbar { display: none }'
   })
 );
 
-app.listen(port, ()=>{
+// Para desenvolvimento local
+if (process.env.NODE_ENV !== 'production') {
+  const port = 3000;
+  app.listen(port, () => {
     console.log(`listening on port ${port}`)
-})
+  })
+}
+
+// Exporta para Vercel
+export default app;
