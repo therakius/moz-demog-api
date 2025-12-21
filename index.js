@@ -75,7 +75,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(apiLimiter)
+app.use((req, res, next) => {
+  if (req.path.startsWith('/v1/docs')) {
+    return next();
+  }
+  return apiLimiter(req, res, next);
+});
+
+app.set('trust proxy', 1);
 
 // versao 1
 app.use("/v1/country", countryRoutes)
