@@ -5,9 +5,8 @@ import { make_response } from "./utils.js";
 import express from "express"
 import morgan from "morgan";
 import cors from "cors"
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path'; // <- AQUI estás a importar dirname
-import path from "path";
+import swaggerUi from 'swagger-ui-express'
+import YAML from "yamljs";
 
 import rateLimit from "express-rate-limit";
 
@@ -19,8 +18,7 @@ import indicatorRoutes from "./src/routes/indicatorRoutes.js"
 
 const port = 3000;
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const swaggerDocument = YAML.load('./swagger.yml');
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -48,7 +46,7 @@ app.use((req, res, next) => {
   let responseBody;
 
   res.send = function (body) {
-    responseBody = body;   // capturamos a resposta
+    responseBody = body;
     return originalSend.call(this, body);
   };
 
@@ -80,10 +78,14 @@ app.use("/v1/indicators", indicatorRoutes)
 
 app.use("/v1/province-info", provincesRoutes)
 
+app.use(
+  '/v1/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    customSiteTitle: 'Documentation'
+  })
+);
 
-app.get('/', (req, res)=>{
-    res.sendFile(path.join(__dirname, 'public', 'docs.html'))
-})
 app.listen(port, ()=>{
     console.log(`listening on port ${port}`)
 })

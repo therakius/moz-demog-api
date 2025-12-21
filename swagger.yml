@@ -1,0 +1,816 @@
+openapi: 3.0.3
+info:
+  title: Moz Demog API
+  version: 1.0.0
+  description: |
+    Public RESTful API that provides demographic data for Mozambique between 2017 and 2026.
+
+    Intended for developers, students, and data scientists. 
+    
+    Data obtained from INE (National Institute of Statistics).
+
+servers:
+  # - url: http://localhost:3000/v1
+  #   description: Development Server
+  - url: https://moz-demog-api.vercel.app/v1
+    # description: Production
+
+paths:
+  /country:
+    get:
+      tags:
+        - Endpoints
+      summary: General and institutional information about Mozambique
+      description: |
+        Returns country information.
+        - If no parameter is provided, returns the current year.
+        - If the `year` parameter is provided, returns the data for the specified year.
+        - Currently, only data from years between 2017 and 2026 are available for this endpoint.
+      parameters:
+        - name: year
+          in: query
+          description: Year for which you want to obtain the data
+          required: false
+          schema:
+            type: integer
+            example: 2023
+      responses:
+        '200':
+          description: General country information found successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates that the request succeeded
+                    example: true
+                  status:
+                    type: integer
+                    description: Internal http code for the response
+                    example: 200
+                  message:
+                    type: string
+                    description: Descriptive message of the response
+                    example: General country information found successfully
+                  errors:
+                    type: array
+                    description: 
+                      List of errors found (empty if none exist)
+                    items:
+                      type: string
+                    example: []
+                  data:
+                    type: object
+                    description: Country data
+                    properties:
+                      country_name:
+                        type: string
+                        description: country name
+                        example: Mozambique
+                      head_of_state:
+                        type: string
+                        description: Name of the head of state
+                        example: Daniel Francisco Chapo
+                      area:
+                        type: number
+                        description: Country's total area in km²
+                        example: 799380
+                      capital_city:
+                        type: string
+                        description: Country's capital
+                        example: Maputo
+                      independence_date:
+                        type: string
+                        format: date
+                        description: Independence date (ISO 8601)
+                        example: "1975-06-25"
+                      official_language:
+                        type: string
+                        description: Official language
+                        example: Portuguese
+                      year:
+                        type: integer
+                        description: Year corresponding to the returned data
+                        example: 2023
+        '400':
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: invalid input parameters
+                  errors:
+                    type: object
+                    example:
+                      year: "'year' must be a numeric value."
+                  data:
+                    type: object
+                    example: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: internal server error
+                  errors:
+                    type: object
+                    example: {}
+                  data:
+                    type: object
+                    example: {}
+  /population:
+    get:
+      tags:
+        - Endpoints
+      summary: Population data per province for the year 2023.
+      description: |
+        Returns population data for the provinces in the specified year.
+        - Parameters are not required.
+        - If no parameters are provided, returns all available information.
+        - If parameters are provided, it displays the information according to the provided filters.
+        - Currently, only data from the year 2023 is available for this endpoint.
+      parameters:
+        - name: field
+          in: query
+          description: |
+            Allows you to filter the results by field. The allowed fields are:
+            - *p_thousand* -- displays population data per province per 1000 inhabitants
+            - *p_structure* -- displays information about the percentage structure of the population in the province relative to the whole country.
+          required: false
+          schema:
+            type: string
+            example: p_structure
+        - name: year
+          in: query
+          description: | 
+            Year for which you want to obtain the data.
+          required: false
+          schema:
+            type: integer
+            example: 2023
+        - name: p_name
+          in: query
+          description: | 
+            Province name to filter results.
+          required: false
+          schema:
+            type: string
+            example: Cabo Delgado
+        - name: page
+          in: query
+          description: |
+            Determines the page number to return.
+            - If not provided, defaults to 1.
+            - If provided, it must be greater than 0 and less than 50.
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: |
+            Determines the total records per page to retrieve.
+            - If not provided, defaults to 5.
+            - If provided, it must be greater than 0 and less than 50.
+          required: false
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Population data found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates that the request succeeded
+                    example: true
+                  status:
+                    type: integer
+                    description: Internal http code for the response
+                    example: 200
+                  message:
+                    type: string
+                    description: Descriptive message of the response
+                    example: Population data retrieved successfully
+                  errors:
+                    type: array
+                    description: 
+                      List of errors found (empty if none exist)
+                    items:
+                      type: string
+                    example: []
+                  data:
+                    type: object
+                    description: Population data
+                    properties:
+                      year:
+                        type: integer
+                        description: year for which the user wants to retrieve data
+                        example: 2023
+                      province_name:
+                        type: string
+                        description: province name
+                        example: Maputo
+                      population_density:
+                        type: number
+                        description: population density per km²
+                        example: 33
+                      population_per_thousand:
+                        type: object
+                        description: Province population per 1000 inhabitants
+                        properties:
+                          total:
+                            type: number
+                            description: total population per 1000 inhabitants
+                            example: 2745
+                          male:
+                            type: number
+                            description: male population per 1000 inhabitants
+                            example: 1337
+                          female:
+                            type: number
+                            description: female population per 1000 inhabitants
+                            example: 1408
+                      percentual_structure:
+                        type: object
+                        description: percentage structure of the population for the province
+                        properties:
+                          total:
+                            type: number
+                            description: the total percent of the population from the province
+                            example: 8.5
+                          male:
+                            type: number
+                            description: the percentage of the male population
+                            example: 8.5
+                          female:
+                            type: number
+                            description: the percentage of the female population
+                            example: 8.4
+                  metadata:
+                    type: object
+                    description: display metadata sent by the server, like pagination, record count, etc
+                    properties:
+                      current_page:
+                        type: integer
+                        description: describes the current page
+                        example: 1
+                      records_per_page:
+                        type: integer
+                        description: describes the total records per page
+                        example: 5
+                      total_records:
+                        type: integer
+                        description: describes the total record available for the request
+                        example: 1
+                      total_pages:
+                        type: integer
+                        description: describes the amount of available pages
+                        example: 1
+                      has_next:
+                        type: boolean
+                        description: tells if there's a next page
+                        example: false
+                      has_prev:
+                        type: boolean
+                        description: tells if there's a previous page
+                        example: false
+
+        '400':
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: invalid input parameters
+                  errors:
+                    type: object
+                    example:
+                      p_name: "Unknown provinve 'cabo delgad'."
+                  data:
+                    type: object
+                    example: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: internal server error
+                  errors:
+                    type: object
+                    example: {}
+                  data:
+                    type: object
+                    example: {}
+  /indicators:
+    get:
+      tags:
+        - Endpoints
+      summary: Demographic indicators for the years between 2017 and 2026 included.
+      description: |
+        Returns demographic indicators according to the given filters.
+        - Parameters are not required.
+        - If no parameters are provided, returns all available information.
+        - If parameters are provided, it displays the information according to the provided filters.
+      parameters:
+        - name: fields
+          in: query
+          description: |
+            Allows you to filter the results by a group of fields. The allowed fields are:
+            - *p_thousand* -- displays population of the country per 1000 inhabitants per year.
+            - *i_mortality* -- displays infant mortality in the country per year.
+            - *d_rate* -- displays the dependency rate of the country per year.
+            - *l_expectancy* -- displays life expectancy in years for each year.
+
+          required: false
+          schema:
+            type: array
+            example: ["p_thousand", "i_mortality", "d_rate", "l_expectancy"]
+        - name: y_start
+          in: query
+          description: | 
+            Lower bound for the year range you want to see the data.
+              * If not combined with y_end, the returned results will be only for the specified year
+          required: false
+          schema:
+            type: integer
+            example: 2017
+        - name: y_end
+          in: query
+          description: | 
+            Upper bound for the year range you want to see the data.
+              * Must be combined with y_start
+              * Must be greater than y_start  
+          required: false
+          schema:
+            type: integer
+            example: 2022
+        - name: page
+          in: query
+          description: |
+            determines the first page the user wants data to show from.
+            - if not provided, it takes a default value of 1, meaning the first oage is going to be 1.
+            - if provided, it must be greater than 0 and less than 50
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: |
+            determines the total records per page the user wants data to retrieve.
+            - if not provided, it takes a default value of 5, meaning the first oage is going to be 1.
+            - if provided, it must be greater than 0 and less than 50
+          required: false
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Population data found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates that the request succeeded
+                    example: true
+                  status:
+                    type: integer
+                    description: Internal http code for the response
+                    example: 200
+                  message:
+                    type: string
+                    description: Descriptive message of the response
+                    example: Population data retrieved successfully
+                  errors:
+                    type: array
+                    description: 
+                      List of errors found (empty if none exist)
+                    items:
+                      type: string
+                    example: []
+                  data:
+                    type: object
+                    description: Population data
+                    properties:
+                      year:
+                        type: integer
+                        description: year for which the user wants to retrieve data
+                        example: 2023
+                      province_name:
+                        type: string
+                        description: province name
+                        example: maputo
+                      population_density:
+                        type: number
+                        description: population density per km²
+                        example: 33
+                      population_per_thousand:
+                        type: object
+                        description: Province population per 1000 inhabitants
+                        properties:
+                          total:
+                            type: number
+                            description: total population per 1000 inhabitants
+                            example: 2745
+                          male:
+                            type: number
+                            description: male population per 1000 inhabitants
+                            example: 1337
+                          female:
+                            type: number
+                            description: female population per 1000 inhabitants
+                            example: 1408
+                      percentual_structure:
+                        type: object
+                        description: percentual structure of the population for the province
+                        properties:
+                          total:
+                            type: number
+                            description: the total percent of the population from the province
+                            example: 8.5
+                          male:
+                            type: number
+                            description: the percentage of the male population
+                            example: 8.5
+                          female:
+                            type: number
+                            description: de percentage of the female population
+                            example: 8.4
+                  metadata:
+                    type: object
+                    description: display metadata sent by the server, like pagination, record count, etc
+                    properties:
+                      current_page:
+                        type: integer
+                        description: descibes the current page
+                        example: 1
+                      records_per_page:
+                        type: integer
+                        description: describes the total records per page
+                        example: 5
+                      total_records:
+                        type: integer
+                        description: describes the total record available for the request
+                        example: 1
+                      total_pages:
+                        type: integer
+                        description: describes the amount of available pages
+                        example: 1
+                      has_next:
+                        type: boolean
+                        description: tells if there's a next page
+                        example: false
+                      has_prev:
+                        type: boolean
+                        description: tells if there's a previous page
+                        example: false
+
+        '400':
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: invalid input parameters
+                  errors:
+                    type: object
+                    example:
+                      page: ["Must be greater than zero."]
+                  data:
+                    type: object
+                    example: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: internal server error
+                  errors:
+                    type: object
+                    example: {}
+                  data:
+                    type: object
+                    example: {}
+  /province-info:
+    get:
+      tags:
+        - Endpoints
+      summary: Province general info for 2023.
+      description: |
+        Returns information for the provinces.
+        - parameters are not required
+        - If no parameter is provided, returns all the available information.
+        - If the parameters are provided, it displays the information accoreding to the provided filters.
+      parameters:
+        - name: p_name
+          in: query
+          description: | 
+            province_name
+          required: false
+          schema:
+            type: string
+            example: Maputo
+        - name: page
+          in: query
+          description: |
+            determines the first page the user wants data to show from.
+            - if not provided, it takes a default value of 1, meaning the first oage is going to be 1.
+            - if provided, it must be greater than 0 and less than 50
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: per_page
+          in: query
+          description: |
+            determines the total records per page the user wants data to retrieve.
+            - if not provided, it takes a default value of 5, meaning the first oage is going to be 1.
+            - if provided, it must be greater than 0 and less than 50
+          required: false
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: information found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates that the request succeeded
+                    example: true
+                  status:
+                    type: integer
+                    description: Internal http code for the response
+                    example: 200
+                  message:
+                    type: string
+                    description: Descriptive message of the response
+                    example: Information found successfully
+                  errors:
+                    type: array
+                    description: 
+                      List of errors found (empty if none exist)
+                    items:
+                      type: string
+                    example: []
+                  data:
+                    type: object
+                    description: Province data
+                    properties:
+                      year:
+                        type: integer
+                        description: correspondent year of retrieved data
+                        example: 2023
+                      province_name:
+                        type: string
+                        description: province name
+                        example: maputo
+                      population_density:
+                        type: number
+                        description: population density per km²
+                        example: 95
+                      area:
+                        type: integer
+                        description: area in km²
+                        example: 300
+                      data_state:
+                        type: string
+                        description: state of data (observed or projected)
+                        example: observed
+                  metadata:
+                    type: object
+                    description: display metadata sent by the server, like pagination, record count, etc
+                    properties:
+                      current_page:
+                        type: integer
+                        description: descibes the current page
+                        example: 1
+                      records_per_page:
+                        type: integer
+                        description: describes the total records per page
+                        example: 5
+                      total_records:
+                        type: integer
+                        description: describes the total record available for the request
+                        example: 1
+                      total_pages:
+                        type: integer
+                        description: describes the amount of available pages
+                        example: 1
+                      has_next:
+                        type: boolean
+                        description: tells if there's a next page
+                        example: false
+                      has_prev:
+                        type: boolean
+                        description: tells if there's a previous page
+                        example: false
+
+        '400':
+          description: Invalid parameter
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: invalid input parameters
+                  errors:
+                    type: object
+                    example:
+                      page: ["Must be greater than zero."]
+                  data:
+                    type: object
+                    example: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: internal server error
+                  errors:
+                    type: object
+                    example: {}
+                  data:
+                    type: object
+                    example: {}
+  /province-info/list:
+    get:
+      tags:
+        - Endpoints
+      summary: Returns the list of provinces.
+      description: |
+        Returns the list of provinces.
+      responses:
+        '200':
+          description: information found successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates that the request succeeded
+                    example: true
+                  status:
+                    type: integer
+                    description: Internal http code for the response
+                    example: 200
+                  message:
+                    type: string
+                    description: Descriptive message of the response
+                    example: Information found successfully
+                  errors:
+                    type: array
+                    description: 
+                      List of errors found (empty if none exist)
+                    items:
+                      type: string
+                    example: []
+                  data:
+                    type: object
+                    description: list of provinces
+                    properties:
+                      provinces:
+                        type: array
+                        description: array of provinces
+                        example: ["Niassa","Cabo Delgado","Nampula","Zambezia","Tete","Manica","Sofala","Inhambane","Gaza","Maputo","Cidade de Maputo"]
+                  metadata:
+                    type: object
+                    description: display metadata sent by the server, like pagination, record count, etc
+                    properties:
+                      current_page:
+                        type: integer
+                        description: descibes the current page
+                        example: 1
+                      records_per_page:
+                        type: integer
+                        description: describes the total records per page
+                        example: 5
+                      total_records:
+                        type: integer
+                        description: describes the total record available for the request
+                        example: 1
+                      total_pages:
+                        type: integer
+                        description: describes the amount of available pages
+                        example: 1
+                      has_next:
+                        type: boolean
+                        description: tells if there's a next page
+                        example: false
+                      has_prev:
+                        type: boolean
+                        description: tells if there's a previous page
+                        example: false
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  status:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: internal server error
+                  errors:
+                    type: object
+                    example: {}
+                  data:
+                    type: object
+                    example: {}
