@@ -57,7 +57,16 @@ export function makeIndicatorsQuery(requestQuery, per_page, offset) {
 
   // manter lógica de fields extras
   if (fields) {
-    fields = JSON.parse(fields);
+    try {
+          if (typeof fields != "object") {
+            fields = JSON.parse(fields);
+          }
+        } catch (error) {
+          return make_response(false, 400, message, {
+            fields: "fields must be an array of strings.",
+          });
+        }
+        
     fields.forEach((field) => {
       query = `SELECT 
                     JSON_BUILD_OBJECT(
