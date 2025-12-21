@@ -18,7 +18,7 @@ import indicatorRoutes from "./src/routes/indicatorRoutes.js"
 
 const port = 3000;
 const app = express();
-const swaggerDocument = YAML.load('./swagger.yml');
+const swaggerDocument = YAML.load('swagger.yml');
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
