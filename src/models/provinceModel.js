@@ -51,7 +51,7 @@ export function getProvinceCountQuery(req){
   let pQueryParams = [];
   let paramIndex = 1;
 
-  if(p_name) {
+  if(p_name != null) {
     pQueryCount +=` and lower(province_name) = $${paramIndex}`
     pQueryParams.push(p_name)
     paramIndex++
@@ -71,6 +71,7 @@ export function getProvinceListQuery(){
 }
 
 export function getProvincesForValidate(province){
+  province = province.toLowerCase()
   const params = [province]
   const query = "select province_name from provinces where lower(province_name) = $1"
 
