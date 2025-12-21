@@ -18,9 +18,9 @@ export function getPopulationQuery(requestQuery, per_page, offset) {
                 ),
             'percentual_structure',
                 JSON_BUILD_OBJECT(
-                    'percentual_total', pps.total,
-                    'percentual_male', pps.male_population,
-                    'percentual_female', pps.female_population
+                    'total', pps.total,
+                    'male', pps.male_population,
+                    'female', pps.female_population
                 )
         `;
 
@@ -42,8 +42,8 @@ export function getPopulationQuery(requestQuery, per_page, offset) {
                 'percentual_structure',
                     JSON_BUILD_OBJECT(
                         'percentual_total', pps.total,
-                        'percentual_male', pps.male_population,
-                        'percentual_female', pps.female_population
+                        'male', pps.male_population,
+                        'female', pps.female_population
                     )
             `;
   }
@@ -83,7 +83,7 @@ export function getPopulationQuery(requestQuery, per_page, offset) {
 
 
 export function makePopulationCountQuery(req) {
-  const { year, p_name } = req.query;
+  let { year, p_name } = req.query;
 
   let pQueryC = `SELECT
     count(*)::int AS total
@@ -105,7 +105,8 @@ export function makePopulationCountQuery(req) {
     paramIndex++;
   }
 
-  if (p_name) {
+  if (p_name != null) {
+    p_name = p_name.toLowerCase()
     pQueryC += ` AND lower(province_name) = $${paramIndex}`;
     pParamsC.push(p_name);
     paramIndex++;
