@@ -6,7 +6,9 @@ import express from "express"
 import morgan from "morgan";
 import cors from "cors"
 import swaggerUi from 'swagger-ui-express'
-import YAML from "yamljs";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import Yaml from "yamljs";
 
 import rateLimit from "express-rate-limit";
 
@@ -18,7 +20,13 @@ import indicatorRoutes from "./src/routes/indicatorRoutes.js"
 
 const port = 3000;
 const app = express();
-const swaggerDocument = YAML.load('swagger.yml');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const swaggerPath = path.join(__dirname, 'swagger.yml');
+const swaggerDoc = Yaml.load(swaggerPath);
+
+
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -81,7 +89,7 @@ app.use("/v1/province-info", provincesRoutes)
 app.use(
   '/v1/docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument, {
+  swaggerUi.setup(swaggerDoc, {
     customSiteTitle: 'Documentation'
   })
 );
