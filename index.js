@@ -82,12 +82,18 @@ app.use("/v1/population", populationRoutes)
 app.use("/v1/indicators", indicatorRoutes)
 app.use("/v1/province-info", provincesRoutes)
 
+app.get('/v1/docs/swagger.json', (req, res) => {
+  res.json(swaggerDoc);
+});
+
 app.use(
   '/v1/docs',
   swaggerUi.serve,
   swaggerUi.setup(swaggerDoc, {
     customSiteTitle: 'Documentation',
-    customCss: '.swagger-ui .topbar { display: none }'
+    swaggerOptions: {
+      url: '/v1/docs/swagger.json'
+    }
   })
 );
 
