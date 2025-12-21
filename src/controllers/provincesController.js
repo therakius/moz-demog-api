@@ -20,10 +20,10 @@ async function sendResponse(res, query, params = [], paginated) {
         .json(make_response(false, 404, "No records found."));
     }
 
-    let result_final = [];
+    let result_final = {};
 
     result.rows.forEach((r) => {
-      result_final.push(r.data);
+      result_final.provinces = r.data.provinces;
     });
 
     const data = result_final;
