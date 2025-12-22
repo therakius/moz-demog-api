@@ -14,7 +14,7 @@ All datasets are sourced from the official **[National Institute of Statistics o
 
 📄 **API Documentation**:  
 You can view and interact with the documentation at  
-👉 [https://moz-demog-api.onrender.com](https://moz-demog-api.onrender.com)
+👉 [https://moz-demog-api.vercel.app/v1/documentation](https://moz-demog-api.vercel.app/v1/documentation)
 
 ---
 
@@ -38,10 +38,10 @@ You can view and interact with the documentation at
 
 | Resource     | Endpoint                                | Method |
 |--------------|------------------------------------------|--------|
-| Country Data | `/api/country`                          | GET    |
-| Provinces    | `/api/provinces/:year`                  | GET    |
-| Districts    | `/api/districts/:province_id/:year`     | GET    |
-| Indicators   | `/api/indicators/:province_id/:year`    | GET    |
+| Country Data | `/country`                          | GET    |
+| Provinces    | `/province-info`                  | GET    |
+| Districts    | `/province-info/list`     | GET    |
+| Indicators   | `/indicators/`    | GET    |
 
 For full parameter details and example responses, visit the [documentation](https://moz-demog-api.onrender.com).
 
@@ -49,8 +49,7 @@ For full parameter details and example responses, visit the [documentation](http
 
 ## 📌 Limitations
 
-- Province- and district-level data is only available for **2023**
-- Hosted on a free-tier service, so expect **cold starts** and **limited performance**
+- Province level data is only available for **2023**
 - Write operations (POST, PUT, DELETE) are **not supported** in the current version
 
 ---
