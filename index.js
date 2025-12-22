@@ -85,7 +85,7 @@ app.use("/v1/province-info", provincesRoutes)
 import { readFileSync } from 'fs';
 
 // Rota que retorna o JSON do swagger
-app.get('/v1/docs', (req, res) => {
+app.get('/v1/docs/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.json(swaggerDoc);
 });
