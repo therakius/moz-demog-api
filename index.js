@@ -82,20 +82,21 @@ app.use("/v1/population", populationRoutes)
 app.use("/v1/indicators", indicatorRoutes)
 app.use("/v1/province-info", provincesRoutes)
 
-app.get('/v1/docs/swagger.json', (req, res) => {
+import { readFileSync } from 'fs';
+
+// Rota que retorna o JSON do swagger
+app.get('/v1/docs', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   res.json(swaggerDoc);
 });
 
-app.use(
-  '/v1/docs',
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerDoc, {
-    customSiteTitle: 'Documentation',
-    swaggerOptions: {
-      url: '/v1/docs/swagger.json'
-    }
-  })
-);
+// Rota que serve a UI
+app.get('/v1/documentation', (req, res) => {
+  const htmlPath = path.join(__dirname, 'public', 'swagger-ui.html');
+  const html = readFileSync(htmlPath, 'utf-8');
+  res.setHeader('Content-Type', 'text/html');
+  res.send(html);
+});
 
 // Para desenvolvimento local
 if (process.env.NODE_ENV !== 'production') {
