@@ -3,9 +3,25 @@ info:
   title: Moz Demog API
   version: 1.0.0
   description: |
-    This is a public RESTful API offering demographic data for Mozambique from 2017 to 2026. </br> It enables developers, students and researchers to query structured information on pupulation, and key demographic metrics. </br>
-    All data is sourced from the National Institute of Statistics (INE), and the API designed for integration into applications, analysis and educational projects.
-
+    This is a **free and public** RESTful API offering demographic data for Mozambique from 2017 to 2026. 
+    
+    It enables developers, students, and researchers to query structured information on population and key demographic metrics.
+    
+    **Key Features:**
+    - Population data by province
+    - Demographic indicators and trends
+    - Historical and projected data (2017-2026)
+    - Clean JSON responses
+    - No authentication required
+    
+    **Rate Limit:** 100 requests per minute
+    
+    **Data Source:** National Institute of Statistics (INE)
+    
+    **Use Cases:** Integration into applications, data analysis, visualization tools, and educational projects.
+    
+    **Base URL:** `https://moz-demog-api.vercel.app/v1`
+    
 servers:
   # - url: http://localhost:3000/v1
   #   description: Development Server
