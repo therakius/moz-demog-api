@@ -90,10 +90,17 @@ app.get('/v1/docs/swagger.json', (req, res) => {
   res.json(swaggerDoc);
 });
 
-// Rota que serve a UI
+// Rota que serve a UI com spec embutido
 app.get('/v1/documentation', (req, res) => {
   const htmlPath = path.join(__dirname, 'public', 'swagger-ui.html');
-  const html = readFileSync(htmlPath, 'utf-8');
+  let html = readFileSync(htmlPath, 'utf-8');
+  
+  // Injeta o spec diretamente no HTML
+  html = html.replace(
+    '"{{SWAGGER_SPEC}}"',
+    JSON.stringify(swaggerDoc)
+  );
+  
   res.setHeader('Content-Type', 'text/html');
   res.send(html);
 });

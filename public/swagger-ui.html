@@ -25,12 +25,12 @@
     <script>
       window.onload = function () {
         SwaggerUIBundle({
-          url: "/v1/docs/swagger.json",
+          spec: "{{SWAGGER_SPEC}}", // ← Mudou de url para spec
           dom_id: "#swagger-ui",
           deepLinking: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
           layout: "StandaloneLayout",
-          filter: false, // ← Adiciona esta linha
+          filter: false,
         });
       };
     </script>
