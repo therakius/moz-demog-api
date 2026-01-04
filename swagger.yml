@@ -23,10 +23,7 @@ info:
     **Base URL:** `https://moz-demog-api.vercel.app/v1`
     
 servers:
-  # - url: http://localhost:3000/v1
-  #   description: Development Server
   - url: https://moz-demog-api.vercel.app/v1
-    # description: Production
 
 paths:
   /country:
@@ -75,38 +72,40 @@ paths:
                       type: string
                     example: []
                   data:
-                    type: object
-                    description: Country data
-                    properties:
-                      country_name:
-                        type: string
-                        description: country name
-                        example: Mozambique
-                      head_of_state:
-                        type: string
-                        description: Name of the head of state
-                        example: Daniel Francisco Chapo
-                      area:
-                        type: number
-                        description: Country's total area in km²
-                        example: 799380
-                      capital_city:
-                        type: string
-                        description: Country's capital
-                        example: Maputo
-                      independence_date:
-                        type: string
-                        format: date
-                        description: Independence date (ISO 8601)
-                        example: "1975-06-25"
-                      official_language:
-                        type: string
-                        description: Official language
-                        example: Portuguese
-                      year:
-                        type: integer
-                        description: Year corresponding to the returned data
-                        example: 2023
+                    type: array
+                    description: Array containing country data
+                    items:
+                      type: object
+                      properties:
+                        country_name:
+                          type: string
+                          description: country name
+                          example: Mozambique
+                        head_of_state:
+                          type: string
+                          description: Name of the head of state
+                          example: Daniel Francisco Chapo
+                        area:
+                          type: number
+                          description: Country's total area in km²
+                          example: 799380
+                        capital_city:
+                          type: string
+                          description: Country's capital
+                          example: Maputo
+                        independence_date:
+                          type: string
+                          format: date
+                          description: Independence date (ISO 8601)
+                          example: "1975-06-25"
+                        official_language:
+                          type: string
+                          description: Official language
+                          example: Portuguese
+                        year:
+                          type: integer
+                          description: Year corresponding to the returned data
+                          example: 2023
         '400':
           description: Invalid parameter
           content:
@@ -128,8 +127,8 @@ paths:
                     example:
                       year: "'year' must be a numeric value."
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
         '500':
           description: Internal server error
           content:
@@ -150,8 +149,8 @@ paths:
                     type: object
                     example: {}
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
   /population:
     get:
       tags:
@@ -238,53 +237,55 @@ paths:
                       type: string
                     example: []
                   data:
-                    type: object
-                    description: Population data
-                    properties:
-                      year:
-                        type: integer
-                        description: year for which the user wants to retrieve data
-                        example: 2023
-                      province_name:
-                        type: string
-                        description: province name
-                        example: Maputo
-                      population_density:
-                        type: number
-                        description: population density per km²
-                        example: 33
-                      population_per_thousand:
-                        type: object
-                        description: Province population per 1000 inhabitants
-                        properties:
-                          total:
-                            type: number
-                            description: total population per 1000 inhabitants
-                            example: 2745
-                          male:
-                            type: number
-                            description: male population per 1000 inhabitants
-                            example: 1337
-                          female:
-                            type: number
-                            description: female population per 1000 inhabitants
-                            example: 1408
-                      percentual_structure:
-                        type: object
-                        description: percentage structure of the population for the province
-                        properties:
-                          total:
-                            type: number
-                            description: the total percent of the population from the province
-                            example: 8.5
-                          male:
-                            type: number
-                            description: the percentage of the male population
-                            example: 8.5
-                          female:
-                            type: number
-                            description: the percentage of the female population
-                            example: 8.4
+                    type: array
+                    description: Array containing population data
+                    items:
+                      type: object
+                      properties:
+                        year:
+                          type: integer
+                          description: year for which the user wants to retrieve data
+                          example: 2023
+                        province_name:
+                          type: string
+                          description: province name
+                          example: Maputo
+                        population_density:
+                          type: number
+                          description: population density per km²
+                          example: 33
+                        population_per_thousand:
+                          type: object
+                          description: Province population per 1000 inhabitants
+                          properties:
+                            total:
+                              type: number
+                              description: total population per 1000 inhabitants
+                              example: 2745
+                            male:
+                              type: number
+                              description: male population per 1000 inhabitants
+                              example: 1337
+                            female:
+                              type: number
+                              description: female population per 1000 inhabitants
+                              example: 1408
+                        percentual_structure:
+                          type: object
+                          description: percentage structure of the population for the province
+                          properties:
+                            total:
+                              type: number
+                              description: the total percent of the population from the province
+                              example: 8.5
+                            male:
+                              type: number
+                              description: the percentage of the male population
+                              example: 8.5
+                            female:
+                              type: number
+                              description: the percentage of the female population
+                              example: 8.4
                   metadata:
                     type: object
                     description: display metadata sent by the server, like pagination, record count, etc
@@ -335,8 +336,8 @@ paths:
                     example:
                       p_name: "Unknown provinve 'cabo delgad'."
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
         '500':
           description: Internal server error
           content:
@@ -357,8 +358,8 @@ paths:
                     type: object
                     example: {}
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
   /indicators:
     get:
       tags:
@@ -450,53 +451,55 @@ paths:
                       type: string
                     example: []
                   data:
-                    type: object
-                    description: Population data
-                    properties:
-                      year:
-                        type: integer
-                        description: year for which the user wants to retrieve data
-                        example: 2023
-                      province_name:
-                        type: string
-                        description: province name
-                        example: maputo
-                      population_density:
-                        type: number
-                        description: population density per km²
-                        example: 33
-                      population_per_thousand:
-                        type: object
-                        description: Province population per 1000 inhabitants
-                        properties:
-                          total:
-                            type: number
-                            description: total population per 1000 inhabitants
-                            example: 2745
-                          male:
-                            type: number
-                            description: male population per 1000 inhabitants
-                            example: 1337
-                          female:
-                            type: number
-                            description: female population per 1000 inhabitants
-                            example: 1408
-                      percentual_structure:
-                        type: object
-                        description: percentual structure of the population for the province
-                        properties:
-                          total:
-                            type: number
-                            description: the total percent of the population from the province
-                            example: 8.5
-                          male:
-                            type: number
-                            description: the percentage of the male population
-                            example: 8.5
-                          female:
-                            type: number
-                            description: de percentage of the female population
-                            example: 8.4
+                    type: array
+                    description: Array containing population data
+                    items:
+                      type: object
+                      properties:
+                        year:
+                          type: integer
+                          description: year for which the user wants to retrieve data
+                          example: 2023
+                        province_name:
+                          type: string
+                          description: province name
+                          example: maputo
+                        population_density:
+                          type: number
+                          description: population density per km²
+                          example: 33
+                        population_per_thousand:
+                          type: object
+                          description: Province population per 1000 inhabitants
+                          properties:
+                            total:
+                              type: number
+                              description: total population per 1000 inhabitants
+                              example: 2745
+                            male:
+                              type: number
+                              description: male population per 1000 inhabitants
+                              example: 1337
+                            female:
+                              type: number
+                              description: female population per 1000 inhabitants
+                              example: 1408
+                        percentual_structure:
+                          type: object
+                          description: percentual structure of the population for the province
+                          properties:
+                            total:
+                              type: number
+                              description: the total percent of the population from the province
+                              example: 8.5
+                            male:
+                              type: number
+                              description: the percentage of the male population
+                              example: 8.5
+                            female:
+                              type: number
+                              description: de percentage of the female population
+                              example: 8.4
                   metadata:
                     type: object
                     description: display metadata sent by the server, like pagination, record count, etc
@@ -547,8 +550,8 @@ paths:
                     example:
                       page: ["Must be greater than zero."]
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
         '500':
           description: Internal server error
           content:
@@ -569,8 +572,8 @@ paths:
                     type: object
                     example: {}
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
   /province-info:
     get:
       tags:
@@ -638,29 +641,31 @@ paths:
                       type: string
                     example: []
                   data:
-                    type: object
-                    description: Province data
-                    properties:
-                      year:
-                        type: integer
-                        description: correspondent year of retrieved data
-                        example: 2023
-                      province_name:
-                        type: string
-                        description: province name
-                        example: maputo
-                      population_density:
-                        type: number
-                        description: population density per km²
-                        example: 95
-                      area:
-                        type: integer
-                        description: area in km²
-                        example: 300
-                      data_state:
-                        type: string
-                        description: state of data (observed or projected)
-                        example: observed
+                    type: array
+                    description: Array containing province data
+                    items:
+                      type: object
+                      properties:
+                        year:
+                          type: integer
+                          description: correspondent year of retrieved data
+                          example: 2023
+                        province_name:
+                          type: string
+                          description: province name
+                          example: maputo
+                        population_density:
+                          type: number
+                          description: population density per km²
+                          example: 95
+                        area:
+                          type: integer
+                          description: area in km²
+                          example: 300
+                        data_state:
+                          type: string
+                          description: state of data (observed or projected)
+                          example: observed
                   metadata:
                     type: object
                     description: display metadata sent by the server, like pagination, record count, etc
@@ -711,8 +716,8 @@ paths:
                     example:
                       page: ["Must be greater than zero."]
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
         '500':
           description: Internal server error
           content:
@@ -733,8 +738,8 @@ paths:
                     type: object
                     example: {}
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
   /province-info/list:
     get:
       tags:
@@ -770,13 +775,15 @@ paths:
                       type: string
                     example: []
                   data:
-                    type: object
-                    description: list of provinces
-                    properties:
-                      provinces:
-                        type: array
-                        description: array of provinces
-                        example: ["Niassa","Cabo Delgado","Nampula","Zambezia","Tete","Manica","Sofala","Inhambane","Gaza","Maputo","Cidade de Maputo"]
+                    type: array
+                    description: Array containing the list of provinces
+                    items:
+                      type: object
+                      properties:
+                        provinces:
+                          type: array
+                          description: array of provinces
+                          example: ["Niassa","Cabo Delgado","Nampula","Zambezia","Tete","Manica","Sofala","Inhambane","Gaza","Maputo","Cidade de Maputo"]
                   metadata:
                     type: object
                     description: display metadata sent by the server, like pagination, record count, etc
@@ -825,5 +832,5 @@ paths:
                     type: object
                     example: {}
                   data:
-                    type: object
-                    example: {}
+                    type: array
+                    example: []
