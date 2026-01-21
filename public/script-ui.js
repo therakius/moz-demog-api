@@ -1,0 +1,1 @@
+let redirectLink = document.getElementById("docs-link")

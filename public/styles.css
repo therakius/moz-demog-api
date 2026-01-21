@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+
+
+#hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.849);
+    height: 100dvh;
+}
+
+h1 {
+    color: antiquewhite;
+}
+p {
+    color: antiquewhite;
+}
