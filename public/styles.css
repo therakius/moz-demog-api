@@ -17,13 +17,20 @@
 
 h1 {
     color: antiquewhite;
+    letter-spacing: 2px;
 }
 p {
     color: antiquewhite;
+    letter-spacing: 1px;
 }
 
 h1, p {
     text-align: center;
+}
+
+p > a {
+    text-decoration: underline;
+    color: aquamarine;
 }
 
 @media (max-width: 768px) {
