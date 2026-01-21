@@ -21,3 +21,7 @@ h1 {
 p {
     color: antiquewhite;
 }
+
+h1, p {
+    text-align: center;
+}
