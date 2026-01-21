@@ -43,6 +43,8 @@ app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json())
 
+app.use(express.static(path.join(__dirname, 'public')))
+
 app.use((req, res, next) => {
   const originalSend = res.send;
   let responseBody;
@@ -91,7 +93,7 @@ app.get('/v1/docs/swagger.json', (req, res) => {
 });
 
 // Rota que serve a UI com spec embutido
-app.get('/v1/documentation', (req, res) => {
+app.get('/v1/docs', (req, res) => {
   const htmlPath = path.join(__dirname, 'public', 'swagger-ui.html');
   let html = readFileSync(htmlPath, 'utf-8');
   
@@ -104,6 +106,11 @@ app.get('/v1/documentation', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.send(html);
 });
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
 // Para desenvolvimento local
 if (process.env.NODE_ENV !== 'production') {
