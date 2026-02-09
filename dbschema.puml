@@ -1,6 +1,6 @@
 @startuml moz_database
 skinparam {
-    Nodesep 150
+    Nodesep 200
     Ranksep 200
     Linetype ortho
 }
@@ -10,6 +10,18 @@ skinparam entity {
     FontSize 14
     ArrowThickness 1
 }
+
+enum user_roles {
+    ADMIN
+    CLIENT
+}
+
+enum apk_status{
+    ACTIVE
+    REVOKED
+    EXPIRED
+}
+
 
 entity year {
     + Id: serial [pk]
@@ -97,6 +109,35 @@ entity infant_mortality {
     + female_infant_mortality: numeric (3, 1) 
 }
 
+entity use_user {
+    +user_id: integer [PK]
+    --
+    +user_name: text
+    +user_email: text [unique]
+    +user_paswd_hash: text
+    +user_role: user_roles
+    +user_created_at: date
+    +user_modified_at: date
+    +user_created_by: text
+    +user_modified_by: text
+    +user_is_active: boolean    
+}
+
+
+entity apk_api_keys {
+    +apk_id: integer [pk]
+    ---
+    +apk_key: text
+    +apk_name: text
+    +apk_created_at: date
+    +apk_status: apk_status
+    +apk_modified_at: date
+    +apk_end_date: date
+    +apk_last_used: date
+    --
+    +user_id : int [FK] referenceces use_user(user_id)
+}
+
 'relashionships:
 year --{ provinces
 provinces --{ population_per_thousand
@@ -105,5 +146,6 @@ year -- life_expectancy_at_birth
 year --{ country_pop_indicators
 year -- dependency_rate
 year -- infant_mortality
+use_user ---{ apk_api_keys
 
 @enduml
