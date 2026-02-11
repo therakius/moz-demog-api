@@ -110,32 +110,49 @@ entity infant_mortality {
 }
 
 entity use_user {
-    +user_id: integer [PK]
+    + user_id: integer [PK]
     --
-    +user_name: text
-    +user_email: text [unique]
-    +user_paswd_hash: text
-    +user_role: user_roles
-    +user_created_at: date
-    +user_modified_at: date
-    +user_created_by: text
-    +user_modified_by: text
-    +user_is_active: boolean    
+    + user_name: text
+    + user_email: text [unique]
+    + user_paswd_hash: text
+    + user_role: user_roles
+    + user_created_at: date
+    + user_modified_at: date
+    + user_created_by: text
+    + user_modified_by: text
+    + user_is_active: boolean    
 }
 
 
 entity apk_api_keys {
-    +apk_id: integer [pk]
+    + apk_id: integer [pk]
     ---
-    +apk_key: text
-    +apk_name: text
-    +apk_created_at: date
-    +apk_status: apk_status
-    +apk_modified_at: date
-    +apk_end_date: date
-    +apk_last_used: date
+    + apk_key: text
+    + apk_name: text
+    + apk_created_at: date
+    + apk_status: apk_status
+    + apk_modified_at: date
+    + apk_end_date: date
+    + apk_last_used: date
     --
-    +user_id : int [FK] referenceces use_user(user_id)
+    + user_id : int [FK] referenceces use_user(user_id)
+}
+
+entity l_logs {
+    + l_id: int [PK]
+    ---
+    + l_created_at: date
+    + l_modified_at: date
+    + l_updated_at: date
+    + l_start_date: date
+    + l_end_date: date
+    + l_request_method : text
+    + l_url: text
+    + l_request_query: text
+    + l_response: text
+    --
+    + user_id: int [FK] referenceces use_user(user_id)
+
 }
 
 'relashionships:
@@ -147,5 +164,6 @@ year --{ country_pop_indicators
 year -- dependency_rate
 year -- infant_mortality
 use_user ---{ apk_api_keys
+use_user ---{ l_logs
 
 @enduml
