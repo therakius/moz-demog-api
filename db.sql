@@ -199,12 +199,57 @@ INSERT INTO public.country_pop_indicators (id, total_population, male_population
 (9, 34090.0, 16524.0, 17566.0, 35.0, 94.1, 11.3, 36.2, 2.5, 9, 17.8),
 (10, 34959.0, 16961.0, 17998.0, 35.2, 94.2, 11.2, 36.0, 2.5, 10, 17.0);
 
-create table public.country_data (    
+create table if not exists public.country_data (    
     id serial primary key,
     capital_city text,
     official_language text,
     independence_date date,
     area_in_sqkm integer
+);
+
+
+create type user_roles as enum('ADMIN', 'CLIENT');
+
+create type apk_status as enum ('ACTIVE', 'REVOKED', 'EXPIRED');
+
+CREATE TABLE USE_USER (USER_ID SERIAL PRIMARY KEY,
+user_name text,
+user_email text unique,
+user_password_hash text,
+user_role user_roles default 'CLIENT',
+user_created_at timestamp default current_timestamp,
+user_modified_at timestamp default current_timestamp,
+user_created_by int,
+user_modified_by int,
+user_is_active boolean default TRUE
+);
+
+CREATE TABLE apk_api_keys (
+    apk_id SERIAL PRIMARY KEY,
+    apk_name TEXT,
+    apk_key_hash TEXT,
+    apk_created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    apk_modified_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    apk_end_date TIMESTAMPTZ DEFAULT (CURRENT_TIMESTAMP + INTERVAL '3 years'),
+    apk_last_used TIMESTAMPTZ,
+    user_id INT REFERENCES use_user(user_id)
+);
+
+ALTER TABLE apk_api_keys
+ADD COLUMN apk_status apk_status default 'ACTIVE' not null;
+
+
+
+create table l_logs (
+l_id serial primary key,
+l_created_at timestamptz default current_timestamp,
+l_request_method varchar(10),
+l_url text,
+l_endpoint text,
+l_request_query text,
+l_status_code int,
+l_response text,
+l_apk_id int references apk_api_keys(apk_id)
 );
 
 select * from public.country_data;
