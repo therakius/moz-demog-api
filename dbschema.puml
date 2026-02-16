@@ -114,7 +114,7 @@ entity use_user {
     --
     + user_name: text
     + user_email: text [unique]
-    + user_paswd_hash: text
+    + user_password_hash: text
     + user_role: user_roles
     + user_created_at: timestamp
     + user_modified_at: timestamp
@@ -129,11 +129,11 @@ entity apk_api_keys {
     ---
     + apk_key_hash: text
     + apk_name: text
-    + apk_created_at: timestamp
+    + apk_created_at: timestamptz
     + apk_status: apk_status
-    + apk_modified_at: timestamp
+    + apk_modified_at: timestamptz
     + apk_end_date: date
-    + apk_last_used: timestamp
+    + apk_last_used: timestamptz
     --
     + user_id : int [FK] referenceces use_user(user_id)
 }
@@ -142,7 +142,7 @@ entity l_logs {
     + l_id: int [PK]
     ---
     + l_created_at: timestamp
-    + l_request_method : text
+    + l_request_method : varchar(10)
     + l_url: text
     + l_endpoint: text
     + l_request_query: text
