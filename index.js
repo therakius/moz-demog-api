@@ -10,12 +10,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import Yaml from "yamljs";
 
+
 import rateLimit from "express-rate-limit";
 
 import provincesRoutes from "./src/routes/provincesRoutes.js";
 import countryRoutes from "./src/routes/countryRoute.js"
 import populationRoutes from "./src/routes/populationRoutes.js"
 import indicatorRoutes from "./src/routes/indicatorRoutes.js"
+import authRoutes from "./src/routes/authRoutes.js"
 
 const app = express();
 
@@ -42,6 +44,7 @@ const apiLimiter = rateLimit({
 app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -83,6 +86,7 @@ app.use("/v1/country", countryRoutes)
 app.use("/v1/population", populationRoutes)
 app.use("/v1/indicators", indicatorRoutes)
 app.use("/v1/province-info", provincesRoutes)
+app.use("/auth", authRoutes)
 
 import { readFileSync } from 'fs';
 
