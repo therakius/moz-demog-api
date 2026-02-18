@@ -1,5 +1,8 @@
 import { make_response } from "../utils.js";
 import { provincesQuery } from "./controllers/provincesController.js";
+import { getUserQuery } from "./models/authModel.js";
+import { getUser } from "./controllers/authController.js";
+import { comparePasswords } from "../utils.js";
 
 const regex = /[!@#$%^&*()\-+={}[\]:;"'<>,.?\/|\\]/;
 const regexArray = /[!@#$%^&*()\-+={}\:;'<>.?\/|\\]/;
@@ -281,4 +284,25 @@ export function validatePaginationInputs(page, per_page) {
 
   if (Object.keys(errors).length > 0)
     return make_response(false, 400, message, errors, {});
+}
+
+
+export async function validateUser(email, password) {
+  try {
+
+    const builtQuery = getUserQuery(email, password)
+
+    const user = await getUser(builtQuery.query, builtQuery.values)
+
+    if (!user) return false
+    
+    const userHash = user.user_password_hash;
+    
+    const isValidHash = await comparePasswords(password, userHash)
+
+    return isValidHash
+  
+  } catch (error) {
+    console.log(error)
+  }
 }
