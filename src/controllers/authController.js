@@ -1,5 +1,4 @@
 
-import { Query } from "pg"
 import { hashPassword } from "../../utils.js"
 import { createKeyQuery, userQuery } from "../models/authModel.js"
 import { make_response } from "../../utils.js"
@@ -7,6 +6,8 @@ import db from "../models/db.js"
 import { validateUser } from "../validators.js"
 import { keyGenerator } from "../../utils.js"
 import { sendEmail } from "../services/emailService.js"
+import { getUserQuery } from "../models/authModel.js"
+import validator from "validator"
 
 async function authResponse (query, params = [], operationType) {
     let message;
@@ -37,8 +38,10 @@ async function authResponse (query, params = [], operationType) {
     }
 }
 
-
 export async function getUser(query, params){
+
+    console.log(query, params)
+
     try {
         const result = await db.query(query, params)
         
@@ -47,33 +50,29 @@ export async function getUser(query, params){
         return result.rows[0] || false
 
     } catch (error) {
-        console.error(error.message)
+        console.error(error)
     }
 }
 
-
-
 export async function createUser(req, res){
-    const username = req.body.username
-    const email = req.body.email
-    const password = req.body.password
+    const {username, email, password} = req.body
 
+    if (!validator.isEmail(email)) return res.status(400).json(make_response(false, 400, "Invalid email", [], [], []))
+
+    const emailExistQuery =  getUserQuery(email)
+
+    const emailExists = await getUser(emailExistQuery.query, emailExistQuery.values)
+
+    if (emailExists) return res.status(400).json(make_response(false, 400, "Email already in use", [], [], []))
     const passwdHash = hashPassword(password)
 
     let builtQuery = userQuery(username, email, passwdHash)
-    console.log(builtQuery)
 
     const createdUserResult = await authResponse(builtQuery.query, builtQuery.values, 'createUser')
 
-    if(createdUserResult.status === 201) {
-        return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, createdUserResult.message, [], [], []))
-    }
+    if (createdUserResult.status === 500) return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, "An error occured while creating account", [], [], []))
 
-    if (createdUserResult.status === 500) {
-        return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, "An error occured while creating account", [], [], []))
-    }
-    
-  
+    return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, createdUserResult.message, [], [], []))
 
 }
 
@@ -89,7 +88,6 @@ export async function generateKey(req, res) {
 
     const key = keyGenerator()
     
-
     const KeyQuery = createKeyQuery(userExists.userId, keyName, key)
 
     const createKeyResult = await authResponse(KeyQuery.query, KeyQuery.values, 'generateKey')

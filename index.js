@@ -5,7 +5,6 @@ import { make_response } from "./utils.js";
 import express from "express"
 import morgan from "morgan";
 import cors from "cors"
-import swaggerUi from 'swagger-ui-express'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Yaml from "yamljs";
