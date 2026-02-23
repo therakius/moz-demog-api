@@ -12,17 +12,13 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+let message
 
 
-export async function sendEmail(recipient, key) {
+export async function sendEmail(recipient, subject, message ="", key="") {
 
-    console.log("sending email to " + recipient + ".")
-
-    const info = await transporter.sendMail({
-        from: `"Moz Demog API" <${process.env.EMAIL_USER}>`,
-        to: recipient,
-        subject: "Your API Key",
-        html: `
+    if (subject === 'Your API Key') {
+        message = `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222;">
             <h2>Welcome to Moz Demographic API 🎉</h2>
 
@@ -62,6 +58,43 @@ export async function sendEmail(recipient, key) {
             </div>
 
             `
+    } else if (subject === "Account Created Successfully") {
+        message = `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222;">
+            <h2>Welcome to Moz Demographic API 🎉</h2>
+
+            <p>Hello,</p>
+
+            <p>
+                Your account has been created successfully.
+            </p>
+
+            <p> you will receive an email with your api_key in moments</p>
+
+            <p style="margin-top: 16px;">
+                ⚠️ lease make sure to keep the key secure and do not share it publicly. If you believe
+                it has been compromised, revoke it and generate a new one immediately.
+            </p>
+
+            <p>
+                If you have any questions, feel free to reply to this email.
+            </p>
+
+            <p>
+                Best regards,<br />
+                <strong>Moz Demographic API Team</strong>
+            </p>
+            </div>
+
+            `
+    }
+    console.log("sending email to " + recipient + ".")
+
+    const info = await transporter.sendMail({
+        from: `"Moz Demog API" <${process.env.EMAIL_USER}>`,
+        to: recipient,
+        subject: "Your API Key",
+        html: message 
     })
 
 

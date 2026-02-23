@@ -16,37 +16,34 @@ async function authResponse (query, params = [], operationType) {
 
     try {
         const result = await db.query(query, params);
-        
+        let user_id = ""
+        let key_id = ""
         if (operationType === 'createUser') {
             if (result.rows[0].user_id) {
-            message = 'account created successfully'
+                user_id = result.rows[0].user_id
+                message = 'Account created successfully, please check your imbox for further instructions'
            }
         
         } else if (operationType === 'generateKey'){
             if (result.rows[0].key_id) {
-            message = 'api key generated successfully! please check your inbox for further instructions'
+                key_id = result.rows[0].key_id
+                message = 'api key generated successfully! please check your inbox for further instructions'
             }
 
 
         }         
 
-        return {status, message, operationType, error}
+        return {status, message, operationType, user_id, key_id, error}
 
     } catch (error){
-            console.log(error)
             status = 500           
     }
 }
 
 export async function getUser(query, params){
-
-    console.log(query, params)
-
     try {
         const result = await db.query(query, params)
         
-        console.log(result.rows[0])
-
         return result.rows[0] || false
 
     } catch (error) {
@@ -72,7 +69,23 @@ export async function createUser(req, res){
 
     if (createdUserResult.status === 500) return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, "An error occured while creating account", [], [], []))
 
-    return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, createdUserResult.message, [], [], []))
+    await sendEmail(email, "Account Created Successfully")
+
+    const userID = createdUserResult.user_id
+    const userApiKey = keyGenerator()
+
+
+    const KeyQuery = createKeyQuery(userID, "default", userApiKey)
+
+    let mailStatus;
+    const registerKeyToDb = await authResponse(KeyQuery.query, KeyQuery.values, 'generateKey')
+    if(registerKeyToDb.status === 201) {
+        mailStatus = await sendEmail(email, "Your API Key", "", userApiKey)
+        
+    }
+    
+
+    if (mailStatus.accepted.length > 0) return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, createdUserResult.message, [], [], []))
 
 }
 
@@ -93,7 +106,7 @@ export async function generateKey(req, res) {
     const createKeyResult = await authResponse(KeyQuery.query, KeyQuery.values, 'generateKey')
 
     if(createKeyResult.status === 201) {
-        const mailStatus = await sendEmail(user_email, key)
+        const mailStatus = await sendEmail(user_email, 'Your API Key', '', key)
 
         //send key through email
         if (mailStatus.accepted.length > 0){
