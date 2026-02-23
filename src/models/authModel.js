@@ -13,3 +13,13 @@ export function getUserQuery(email) {
     const values = [email]
     return {query, values}
 }
+
+export function createKeyQuery(userId, keyName, keyHash){
+    const query = `
+    insert into apk_api_keys (user_id, apk_name, apk_key_hash)
+    values($1, $2, $3) returning apk_id as key_id
+    `
+    const values = [userId, keyName, keyHash]
+
+    return {query, values}
+}

@@ -295,12 +295,10 @@ export async function validateUser(email, password) {
     const user = await getUser(builtQuery.query, builtQuery.values)
 
     if (!user) return false
-    
-    const userHash = user.user_password_hash;
-    
-    const isValidHash = await comparePasswords(password, userHash)
 
-    return isValidHash
+    const isValidHash = await comparePasswords(password, user.user_password_hash)
+
+    return {IsValid: isValidHash, userId: user.user_id}
   
   } catch (error) {
     console.log(error)

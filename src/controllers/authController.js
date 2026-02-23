@@ -1,35 +1,39 @@
 
 import { Query } from "pg"
 import { hashPassword } from "../../utils.js"
-import { userQuery } from "../models/authModel.js"
+import { createKeyQuery, userQuery } from "../models/authModel.js"
 import { make_response } from "../../utils.js"
 import db from "../models/db.js"
 import { validateUser } from "../validators.js"
 import { keyGenerator } from "../../utils.js"
 import { sendEmail } from "../services/emailService.js"
 
-async function authResponse (res, query, params = [], operationType) {
-    console.log(query)
+async function authResponse (query, params = [], operationType) {
+    let message;
+    let error = "";
+    let status = 201
 
-    if (operationType === 'createUser') {
-        try {
-            const result = await db.query(query, params);
-            if (!result) {
-                return res.status(500).json(make_response(false, 500, 'an error occured while creating the user', [], []))
+    try {
+        const result = await db.query(query, params);
+        
+        if (operationType === 'createUser') {
+            if (result.rows[0].user_id) {
+            message = 'account created successfully'
+           }
+        
+        } else if (operationType === 'generateKey'){
+            if (result.rows[0].key_id) {
+            message = 'api key generated successfully! please check your inbox for further instructions'
             }
 
-            return res.status(201).json(make_response(true, 201, 'account created successfully', [], {user: result.rows.user_id}))
 
+        }         
 
-        } catch (error){
+        return {status, message, operationType, error}
+
+    } catch (error){
             console.log(error)
-            return res.status(500).json(make_response(false, 500, 'There was an internal server error', [], {}, {}))
-        }
-    }
-
-    if (operationType === 'generateKey') {
-
-
+            status = 500           
     }
 }
 
@@ -48,7 +52,8 @@ export async function getUser(query, params){
 }
 
 
-export function createUser(req, res){
+
+export async function createUser(req, res){
     const username = req.body.username
     const email = req.body.email
     const password = req.body.password
@@ -58,36 +63,46 @@ export function createUser(req, res){
     let builtQuery = userQuery(username, email, passwdHash)
     console.log(builtQuery)
 
-    authResponse(res, builtQuery.query, builtQuery.values, 'createUser')
+    const createdUserResult = await authResponse(builtQuery.query, builtQuery.values, 'createUser')
+
+    if(createdUserResult.status === 201) {
+        return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, createdUserResult.message, [], [], []))
+    }
+
+    if (createdUserResult.status === 500) {
+        return res.status(createdUserResult.status).json(make_response(true, createdUserResult.status, "An error occured while creating account", [], [], []))
+    }
+    
   
 
 }
 
 export async function generateKey(req, res) {
-    /**
-    * 1. check if user exists
-    * 2. if user does not exist, tell the user to verify the email or password
-    * 3. if user exists, generate key and send via email
-    * 4. give tell the user to verify the mailbox
-    * 5. create a database entry for the api key
-    */
 
-    const keyName = req.body.keyName;
+    const keyName = req.body.key_name;
     const user_email = req.body.email
     const user_password = req.body.password
 
     let userExists = await validateUser(user_email, user_password)
 
-    if (!userExists) return res.status(400).json(make_response(false, 400, 'invalid username or password', [], [], {}))
-    
-    // genarate key
+    if (!userExists.IsValid) return res.status(400).json(make_response(false, 400, 'invalid username or password', [], [], {}))
+
     const key = keyGenerator()
-    //send key through email
-    const mailStatus = await sendEmail(user_email, key)
     
-    if (mailStatus.accepted.length > 0){
-        return res.status(201).json(make_response(true, 201, 'your key was generated successfully, please check your mail box (including spam)', [], [], []))
-    } else {
-        return res.status(400).json(make_response(false, 400, "there was an error generating your key. please try again later.", [], [], []))
+
+    const KeyQuery = createKeyQuery(userExists.userId, keyName, key)
+
+    const createKeyResult = await authResponse(KeyQuery.query, KeyQuery.values, 'generateKey')
+
+    if(createKeyResult.status === 201) {
+        const mailStatus = await sendEmail(user_email, key)
+
+        //send key through email
+        if (mailStatus.accepted.length > 0){
+            return res.status(createKeyResult.status).json(make_response(true, createKeyResult.status, createKeyResult.message, [], [], []))
+
+        } else {
+            return res.status().json(make_response(false, 500, "there was an error generating your key. please try again later.", [], [], []))
+        }
     }
 }
