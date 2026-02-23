@@ -15,6 +15,9 @@ const transporter = nodemailer.createTransport({
 
 
 export async function sendEmail(recipient, key) {
+
+    console.log("sending email to " + recipient + ".")
+
     const info = await transporter.sendMail({
         from: `"Moz Demog API" <${process.env.EMAIL_USER}>`,
         to: recipient,
@@ -61,8 +64,11 @@ export async function sendEmail(recipient, key) {
             `
     })
 
+
+    if (info.accepted.length > 0 ) {
+        console.log("message sent successfully.")
+    }
     return info
 }
 
-
-sendEmail("gaspardc116@gmail.com", "GADTEST12345")
+// sendEmail("gaspardc116@gmail.com", "GADTEST12345")
