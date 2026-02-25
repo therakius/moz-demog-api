@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 let message
 
 
-export async function sendEmail(recipient, subject, message ="", key="") {
+export async function sendEmail(recipient, subject, key="") {
 
     if (subject === 'Your API Key') {
         message = `
@@ -87,13 +87,57 @@ export async function sendEmail(recipient, subject, message ="", key="") {
             </div>
 
             `
+    } else if (subject === "Reset password instructions") {
+        message = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222;">
+            
+            <p>Hello,</p>
+
+            <p>
+                If you did not request a password reset, please ignore this email.
+                <br><br>
+                Otherwise, click the link below to reset your password:
+            </p>
+
+            <div style="
+                padding: 0
+                border-radius: 6px;
+                text-align: left;
+                width: fit-content;
+            ">
+                <a 
+                    href="https://moz-demog-api.vercel.app/auth/reset-password?token=${encodeURIComponent(key)}"
+                    style="
+                        display: inline-block;
+                        padding: 10px 18px;
+                        background-color: #2563eb;
+                        color: #ffffff;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                    "
+                >
+                    Reset Password
+                </a>
+            </div>
+
+            <p style="margin-top: 20px;">
+                If you have any questions, feel free to reply to this email.
+            </p>
+
+            <p>
+                Best regards,<br />
+                <strong>Moz Demographic API Team</strong>
+            </p>
+        </div>
+        `
     }
     console.log("sending email to " + recipient + ".")
 
     const info = await transporter.sendMail({
         from: `"Moz Demog API" <${process.env.EMAIL_USER}>`,
         to: recipient,
-        subject: "Your API Key",
+        subject: subject,
         html: message 
     })
 
@@ -103,5 +147,3 @@ export async function sendEmail(recipient, subject, message ="", key="") {
     }
     return info
 }
-
-// sendEmail("gaspardc116@gmail.com", "GADTEST12345")

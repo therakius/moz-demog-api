@@ -25,9 +25,23 @@ export async function comparePasswords(password, dbHash){
     return isValid;
 }
 
-export const keyGenerator = ()=>{
-    const prefix = "mz"
-    const key = prefix+generateApiKey({length: 32, method: "base62"})
-    return key
+export const keyGenerator = (type)=>{
+
+    let prefix;
+    let hash;
+    
+    if (type === 'key') {
+        prefix = "mz"
+    }
+
+    if (type ==='pass') {
+        prefix =  "cred"
+    }
+
+    hash = prefix+generateApiKey({length: 32, method: "base62"})
+    
+    return hash
 }
+
+
 

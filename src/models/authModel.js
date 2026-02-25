@@ -23,3 +23,13 @@ export function createKeyQuery(userId, keyName, keyHash){
 
     return {query, values}
 }
+
+export function createResetTokenQuery(userID, resetToken) {
+    const query = `
+        insert into user_reset_token(urt_hash, user_id)
+        values($1, $2) returning urt_id, urt_hash
+    `
+    const values = [resetToken, userID]
+
+    return {query, values}
+}

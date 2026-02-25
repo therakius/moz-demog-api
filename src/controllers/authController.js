@@ -1,6 +1,6 @@
 
 import { hashPassword } from "../../utils.js"
-import { createKeyQuery, userQuery } from "../models/authModel.js"
+import { createKeyQuery, createResetTokenQuery, userQuery } from "../models/authModel.js"
 import { make_response } from "../../utils.js"
 import db from "../models/db.js"
 import { validateUser } from "../validators.js"
@@ -8,6 +8,7 @@ import { keyGenerator } from "../../utils.js"
 import { sendEmail } from "../services/emailService.js"
 import { getUserQuery } from "../models/authModel.js"
 import validator from "validator"
+import generateApiKey from "generate-api-key"
 
 async function authResponse (query, params = [], operationType) {
     let message;
@@ -89,6 +90,14 @@ export async function createUser(req, res){
 
 }
 
+
+async function saveKeyToDb(query, params) {
+    
+    const result = await db.query(query, params)
+
+    return result.rows[0] || false
+}
+
 export async function generateKey(req, res) {
 
     const keyName = req.body.key_name;
@@ -116,4 +125,34 @@ export async function generateKey(req, res) {
             return res.status().json(make_response(false, 500, "there was an error generating your key. please try again later.", [], [], []))
         }
     }
+}
+
+
+export async function emailForRecoverPassword(req, res) {
+    const email = req.body.email
+
+    const emailIsValid = validator.isEmail(email)
+    
+    if (!emailIsValid) return res.status(400).json(make_response(false, 400, "please enter a valid email", []))
+    
+    const userQuery = getUserQuery(email)
+
+    const user = await getUser(userQuery.query, userQuery.values)
+
+    if (user) {
+        console.log(user)
+
+        let passwordResetToken = keyGenerator("pass")
+
+        const saveTokenQuery = createResetTokenQuery(user.user_id, passwordResetToken)
+
+        const savedToken = await saveKeyToDb(saveTokenQuery.query, saveTokenQuery.values)
+
+        console.log(savedToken)
+
+        await sendEmail(email, 'Reset password instructions', savedToken.urt_hash)
+              
+    }
+
+    res.status(200).json(make_response(true, 200, "if the entered email is correct you'll receive an email with further instructions"))
 }
