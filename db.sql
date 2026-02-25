@@ -252,6 +252,15 @@ l_response text,
 l_apk_id int references apk_api_keys(apk_id)
 );
 
+create table user_reset_token(
+urt_id serial primary key,
+urt_hash text,
+urt_created_at timestamptz default current_timestamp,
+urt_expires_at timestamptz default (current_timestamp + interval '10 minutes'),
+urt_is_used int default 0,
+user_id int references use_user(user_id) on delete cascade
+)
+
 select * from public.country_data;
 
 INSERT INTO public.country_data (capital_city, official_language, independence_date, total_area_sqkm) 
