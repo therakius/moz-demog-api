@@ -36,10 +36,20 @@ const apiLimiter = rateLimit({
       make_response(false, 429, "Too many requests, please try again later", {
         "description": "RATE_LIMIT_EXCEEDED",
         "retry_after": 60
-      }, {})
+      }, [])
     )
   }
 });
+
+const authLimiter = rateLimit ({
+  windowMs: 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) =>{
+    res.status(429).json(make_response(false, 429, "Maximum number of attempts exceeded, please try again later", {"description": "RATE_LIMIT_EXCEEDED", "retry_after": 60}, []))
+  }
+})
 
 app.use(cors())
 app.use(morgan('dev'));
@@ -83,10 +93,10 @@ app.use((req, res, next) => {
 app.set('trust proxy', 1);
 
 app.use("/v1/country", requireApiKey, countryRoutes)
-app.use("/v1/population", populationRoutes)
-app.use("/v1/indicators", indicatorRoutes)
-app.use("/v1/province-info", provincesRoutes)
-app.use("/auth", authRoutes)
+app.use("/v1/population", requireApiKey, populationRoutes)
+app.use("/v1/indicators", requireApiKey, indicatorRoutes)
+app.use("/v1/province-info", requireApiKey, provincesRoutes)
+app.use("/auth", authLimiter, authRoutes)
 
 import { readFileSync } from 'fs';
 

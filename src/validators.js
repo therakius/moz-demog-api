@@ -1,7 +1,7 @@
 import { make_response } from "../utils.js";
 import { provincesQuery } from "./controllers/provincesController.js";
 import { getUserQuery, validateApiKeyQuery } from "./models/authModel.js";
-import { getUser } from "./controllers/authController.js";
+import { executeSingleRow} from "./controllers/authController.js";
 import { comparePasswords } from "../utils.js";
 
 const regex = /[!@#$%^&*()\-+={}[\]:;"'<>,.?\/|\\]/;
@@ -292,7 +292,7 @@ export async function validateUser(email, password) {
 
     const builtQuery = getUserQuery(email, password)
 
-    const user = await getUser(builtQuery.query, builtQuery.values)
+    const user = await executeSingleRow(builtQuery.query, builtQuery.values)
 
     if (!user) return false
 
@@ -305,8 +305,11 @@ export async function validateUser(email, password) {
   }
 }
 
-export function validateApiKey(apiKey){
+export async function validateApiKey(apiKey){
   
   const queryValidateKey = validateApiKeyQuery(apiKey)
 
+  const isValidApiKey = await executeSingleRow(queryValidateKey.query, queryValidateKey.values)
+
+  return isValidApiKey
 }
