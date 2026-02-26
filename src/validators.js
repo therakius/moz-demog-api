@@ -1,8 +1,9 @@
 import { make_response } from "../utils.js";
 import { provincesQuery } from "./controllers/provincesController.js";
 import { getUserQuery } from "./models/authModel.js";
-import { getUser } from "./controllers/authController.js";
+import { executeSingleRow} from "./controllers/authController.js";
 import { comparePasswords } from "../utils.js";
+import express from "express";
 
 const regex = /[!@#$%^&*()\-+={}[\]:;"'<>,.?\/|\\]/;
 const regexArray = /[!@#$%^&*()\-+={}\:;'<>.?\/|\\]/;
@@ -292,7 +293,7 @@ export async function validateUser(email, password) {
 
     const builtQuery = getUserQuery(email, password)
 
-    const user = await getUser(builtQuery.query, builtQuery.values)
+    const user = await executeSingleRow (builtQuery.query, builtQuery.values)
 
     if (!user) return false
 

@@ -43,15 +43,12 @@ async function authResponse (query, params = [], operationType) {
     }
 }
 
-export async function getUser(query, params){
-    try {
-        const result = await db.query(query, params)
-        
-        return result.rows[0] || false
 
-    } catch (error) {
-        console.error(error)
-    }
+export async function executeSingleRow(query, params) {
+
+    const result = await db.query(query, params)
+    
+    return result.rows[0] || false
 }
 
 export async function createUser(req, res){
@@ -61,7 +58,7 @@ export async function createUser(req, res){
 
     const emailExistQuery =  getUserQuery(email)
 
-    const emailExists = await getUser(emailExistQuery.query, emailExistQuery.values)
+    const emailExists = await executeSingleRow(emailExistQuery.query, emailExistQuery.values)
 
     if (emailExists) return res.status(400).json(make_response(false, 400, "Email already in use", [], [], []))
     const passwdHash = hashPassword(password)
@@ -92,37 +89,6 @@ export async function createUser(req, res){
 
 }
 
-
-async function saveKeyToDb(query, params) {
-    
-    const result = await db.query(query, params)
-
-    return result.rows[0] || false
-}
-
-async function validateToken (query, params) {
-    
-    const result = await db.query(query, params)
-
-    return result.rows[0] || false
-}
-
-async function updateUserPassword(query, params){
-
-    const result = await db.query(query, params)
-
-    return result.rows[0] || false
-}
-
-async function updateToken(query, params) {
-
-    console.log(query)
-    console.log(params)
-
-    const result = await db.query(query, params)
-    
-    return result.rows[0] || false
-} 
 
 export async function generateKey(req, res) {
 
@@ -163,7 +129,7 @@ export async function emailForRecoverPassword(req, res) {
     
     const userQuery = getUserQuery(email)
 
-    const user = await getUser(userQuery.query, userQuery.values)
+    const user = await executeSingleRow(userQuery.query, userQuery.values)
 
     if (user) {
 
@@ -171,7 +137,7 @@ export async function emailForRecoverPassword(req, res) {
 
         const saveTokenQuery = createResetTokenQuery(user.user_id, passwordResetToken)
 
-        const savedToken = await saveKeyToDb(saveTokenQuery.query, saveTokenQuery.values)
+        const savedToken = await executeSingleRow(saveTokenQuery.query, saveTokenQuery.values)
 
         console.log(savedToken)
 
@@ -187,7 +153,7 @@ export async function resetPassword(req, res){
 
     const validateTokenQuery = checkValidTokenQuery(token)
 
-    const isValidToken = await validateToken(validateTokenQuery.query, validateTokenQuery.values)
+    const isValidToken = await executeSingleRow(validateTokenQuery.query, validateTokenQuery.values)
     
 
     if (!isValidToken) return res.status(401).json(make_response(false, 401, "Invalid or expired token", []))
@@ -196,11 +162,11 @@ export async function resetPassword(req, res){
 
     const updateUserQuery = updateUserPasswordQuery(isValidToken.user_id, new_password_hash)
 
-    const updatedUser = await updateUserPassword(updateUserQuery.query, updateUserQuery.values)
+    const updatedUser = await executeSingleRow(updateUserQuery.query, updateUserQuery.values)
 
     const updateTokenQuery = updateUserResetTokenQuery(isValidToken.urt_id)
 
-    const updatedToken = await updateToken(updateTokenQuery.query, updateTokenQuery.values)
+    const updatedToken = await executeSingleRow(updateTokenQuery.query, updateTokenQuery.values)
 
     console.log(updatedToken)
 
