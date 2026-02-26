@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { make_response } from "./utils.js";
+import { requireApiKey } from "./src/middlewares/requireApiKey.js";
 
 import express from "express"
 import morgan from "morgan";
@@ -81,7 +82,7 @@ app.use((req, res, next) => {
 
 app.set('trust proxy', 1);
 
-app.use("/v1/country", countryRoutes)
+app.use("/v1/country", requireApiKey, countryRoutes)
 app.use("/v1/population", populationRoutes)
 app.use("/v1/indicators", indicatorRoutes)
 app.use("/v1/province-info", provincesRoutes)

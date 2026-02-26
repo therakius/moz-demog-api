@@ -1,6 +1,6 @@
 import { make_response } from "../utils.js";
 import { provincesQuery } from "./controllers/provincesController.js";
-import { getUserQuery } from "./models/authModel.js";
+import { getUserQuery, validateApiKeyQuery } from "./models/authModel.js";
 import { getUser } from "./controllers/authController.js";
 import { comparePasswords } from "../utils.js";
 
@@ -303,4 +303,10 @@ export async function validateUser(email, password) {
   } catch (error) {
     console.log(error)
   }
+}
+
+export function validateApiKey(apiKey){
+  
+  const queryValidateKey = validateApiKeyQuery(apiKey)
+
 }

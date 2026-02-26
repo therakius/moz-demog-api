@@ -67,3 +67,13 @@ export function updateUserResetTokenQuery(tokenId) {
 
     return {query, values}
 }
+
+export function validateApiKeyQuery(apiKey){
+    const query = `
+    select apk_id, apk_key_hash, user_id from apk_api_keys
+    where apk_key_hash = $1 apk_end_date > now();
+    `
+    const values = [apiKey]
+
+    return {query, values}
+}
