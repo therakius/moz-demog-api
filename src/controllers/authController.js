@@ -1,6 +1,6 @@
 
 import { hashPassword } from "../../utils.js"
-import { createKeyQuery, createResetTokenQuery, userQuery } from "../models/authModel.js"
+import { checkValidTokenQuery, createKeyQuery, createResetTokenQuery, updateUserPasswordQuery, updateUserResetTokenQuery, userQuery } from "../models/authModel.js"
 import { make_response } from "../../utils.js"
 import db from "../models/db.js"
 import { validateUser } from "../validators.js"
@@ -8,7 +8,6 @@ import { keyGenerator } from "../../utils.js"
 import { sendEmail } from "../services/emailService.js"
 import { getUserQuery } from "../models/authModel.js"
 import validator from "validator"
-import generateApiKey from "generate-api-key"
 
 async function authResponse (query, params = [], operationType) {
     let message;
@@ -19,25 +18,28 @@ async function authResponse (query, params = [], operationType) {
         const result = await db.query(query, params);
         let user_id = ""
         let key_id = ""
+
         if (operationType === 'createUser') {
             if (result.rows[0].user_id) {
                 user_id = result.rows[0].user_id
                 message = 'Account created successfully, please check your imbox for further instructions'
-           }
+            }
         
         } else if (operationType === 'generateKey'){
             if (result.rows[0].key_id) {
                 key_id = result.rows[0].key_id
                 message = 'api key generated successfully! please check your inbox for further instructions'
             }
-
-
         }         
 
         return {status, message, operationType, user_id, key_id, error}
 
     } catch (error){
-            status = 500           
+
+            status = 500
+            const message = error.message
+            console.error("Internal server error" + error.message)
+            return {status, message}       
     }
 }
 
@@ -98,6 +100,30 @@ async function saveKeyToDb(query, params) {
     return result.rows[0] || false
 }
 
+async function validateToken (query, params) {
+    
+    const result = await db.query(query, params)
+
+    return result.rows[0] || false
+}
+
+async function updateUserPassword(query, params){
+
+    const result = await db.query(query, params)
+
+    return result.rows[0] || false
+}
+
+async function updateToken(query, params) {
+
+    console.log(query)
+    console.log(params)
+
+    const result = await db.query(query, params)
+    
+    return result.rows[0] || false
+} 
+
 export async function generateKey(req, res) {
 
     const keyName = req.body.key_name;
@@ -140,7 +166,6 @@ export async function emailForRecoverPassword(req, res) {
     const user = await getUser(userQuery.query, userQuery.values)
 
     if (user) {
-        console.log(user)
 
         let passwordResetToken = keyGenerator("pass")
 
@@ -155,4 +180,32 @@ export async function emailForRecoverPassword(req, res) {
     }
 
     res.status(200).json(make_response(true, 200, "if the entered email is correct you'll receive an email with further instructions"))
+}
+
+export async function resetPassword(req, res){
+    const {token, new_password} = req.body;
+
+    const validateTokenQuery = checkValidTokenQuery(token)
+
+    const isValidToken = await validateToken(validateTokenQuery.query, validateTokenQuery.values)
+    
+
+    if (!isValidToken) return res.status(401).json(make_response(false, 401, "Invalid or expired token", []))
+
+    const new_password_hash = hashPassword(new_password)
+
+    const updateUserQuery = updateUserPasswordQuery(isValidToken.user_id, new_password_hash)
+
+    const updatedUser = await updateUserPassword(updateUserQuery.query, updateUserQuery.values)
+
+    const updateTokenQuery = updateUserResetTokenQuery(isValidToken.urt_id)
+
+    const updatedToken = await updateToken(updateTokenQuery.query, updateTokenQuery.values)
+
+    console.log(updatedToken)
+
+
+    await sendEmail(updatedUser.user_email, 'Password reseted successfully', null)
+    
+    return res.status(201).json(make_response(true, 201, "Password updated successfully!", [], []))
 }

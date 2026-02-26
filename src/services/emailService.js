@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 let message
 
 
-export async function sendEmail(recipient, subject, key="") {
+export async function sendEmail(recipient, subject, key) {
 
     if (subject === 'Your API Key') {
         message = `
@@ -130,6 +130,29 @@ export async function sendEmail(recipient, subject, key="") {
                 <strong>Moz Demographic API Team</strong>
             </p>
         </div>
+        `
+    } else if(subject === 'Password reseted successfully') {
+        message = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #222;">
+                
+                <p>Hello,</p>
+
+                <p>
+                    Your password was reseted successfully!
+                    <br><br>
+                    You can now use our services without any friction.
+                </p>
+
+                <p style="margin-top: 20px;">
+                    If you have any questions, feel free to reply to this email.
+                </p>
+
+                <p>
+                    Best regards,<br />
+                    <strong>Moz Demographic API Team</strong>
+                </p>
+            </div>    
+        
         `
     }
     console.log("sending email to " + recipient + ".")
