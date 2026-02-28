@@ -19,6 +19,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "api-key-generator": "^2.0.3",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
@@ -28,7 +29,7 @@
     "generate-api-key": "^1.0.2",
     "morgan": "^1.10.0",
     "nodemailer": "^8.0.1",
-    "pg": "^8.16.0",
+    "pg": "^8.19.0",
     "postgres": "^3.4.7",
     "swagger-ui-express": "^5.0.1",
     "validator": "^13.15.26",
