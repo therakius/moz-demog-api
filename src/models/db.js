@@ -5,9 +5,9 @@ dotenv.config();
 
 const db = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 60000,
+  idleTimeoutMillis: 60000,
 });
 
 // const db = new pg.Pool({
@@ -20,19 +20,20 @@ const db = new pg.Pool({
 
 
 db.connect()
-  .then(() => console.log('🟢 Connected to neon successfully'))
-  .catch(err => console.error('🔴 Error connecting', err));
+  .then((client) => {
+    console.log('🟢 Connected to neon successfully');
+    client.release();
+  })
+  .catch(err => console.error('🔴 Error connecting', err.message));
 
-  // Global error handling
 db.on('error', (err) => {
   console.error('🔴 Pool error:', err.message);
 });
 
-// ✅ Keep-alive: prevent Neon from dropping all idle connections
 setInterval(() => {
   db.query('SELECT 1').catch(err => {
     console.warn('⚠️ Keep-alive query failed:', err.message);
   });
-}, 240_000); // every 4 minutes
+}, 240_000);
 
 export default db;
