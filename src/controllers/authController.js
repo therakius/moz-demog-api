@@ -122,6 +122,8 @@ export async function generateKey(req, res) {
 export async function emailForRecoverPassword(req, res) {
     const email = req.body.email
 
+     console.log(req.body)
+
     const emailIsValid = validator.isEmail(email)
     
     if (!emailIsValid) return res.status(400).json(make_response(false, 400, "please enter a valid email", []))
@@ -129,6 +131,8 @@ export async function emailForRecoverPassword(req, res) {
     const userQuery = getUserQuery(email)
 
     const user = await executeSingleRow(userQuery.query, userQuery.values)
+
+    console.log("user: " + user)
 
     if (user) {
 
@@ -140,7 +144,7 @@ export async function emailForRecoverPassword(req, res) {
 
         console.log(savedToken)
 
-        await sendEmail(email, 'Reset password instructions', savedToken.urt_hash)
+        await sendEmail(email, 'Reset password instructions', savedToken.urt_hash)   
               
     }
 
