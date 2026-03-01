@@ -72,15 +72,14 @@ export async function createUser(req, res){
     await sendEmail(email, "Account Created Successfully")
 
     const userID = createdUserResult.user_id
-    const userApiKey = keyGenerator()
-
+    const userApiKey = keyGenerator("key")
 
     const KeyQuery = createKeyQuery(userID, "default", userApiKey)
 
     let mailStatus;
     const registerKeyToDb = await authResponse(KeyQuery.query, KeyQuery.values, 'generateKey')
     if(registerKeyToDb.status === 201) {
-        mailStatus = await sendEmail(email, "Your API Key", "", userApiKey)
+        mailStatus = await sendEmail(email, "Your API Key", userApiKey)
         
     }
     

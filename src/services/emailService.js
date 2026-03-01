@@ -72,7 +72,7 @@ export async function sendEmail(recipient, subject, key) {
             <p> you will receive an email with your api_key in moments</p>
 
             <p style="margin-top: 16px;">
-                ⚠️ lease make sure to keep the key secure and do not share it publicly. If you believe
+                ⚠️ Please make sure to keep the key secure and do not share it publicly. If you believe
                 it has been compromised, revoke it and generate a new one immediately.
             </p>
 
