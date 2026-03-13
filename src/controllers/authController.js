@@ -120,11 +120,18 @@ export async function generateKey(req, res) {
 
 
 export async function emailForRecoverPassword(req, res) {
-    const email = req.body.email
+
+    const { email } = req.body || {}
+
+    if (!email) {
+        return res.status(400).json(
+            make_response(false, 400, "Required field missing", [{"field": "email"}], [])
+        )
+    }
 
     const emailIsValid = validator.isEmail(email)
-    
-    if (!emailIsValid) return res.status(400).json(make_response(false, 400, "please enter a valid email", []))
+
+    if (!emailIsValid) return res.status(400).json(make_response(false, 400, "please enter a valid email", [email], []))
     
     const userQuery = getUserQuery(email)
 
