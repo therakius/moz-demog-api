@@ -8,6 +8,7 @@ import { keyGenerator } from "../../utils.js"
 import { sendEmail } from "../services/emailService.js"
 import { getUserQuery } from "../models/authModel.js"
 import validator from "validator"
+import { emailErrorHandler } from "../middlewares/errorHandler.js"
 
 async function authResponse (query, params = [], operationType) {
     let message;
@@ -120,13 +121,18 @@ export async function generateKey(req, res) {
 
 
 export async function emailForRecoverPassword(req, res) {
-    const email = req.body.email
 
-     console.log(req.body)
+    const { email } = req.body || {}
+
+    if (!email) {
+        return res.status(400).json(
+            make_response(false, 400, "Required field missing", [{"field": "email"}], [])
+        )
+    }
 
     const emailIsValid = validator.isEmail(email)
-    
-    if (!emailIsValid) return res.status(400).json(make_response(false, 400, "please enter a valid email", []))
+
+    if (!emailIsValid) return res.status(400).json(make_response(false, 400, "please enter a valid email", [email], []))
     
     const userQuery = getUserQuery(email)
 
@@ -144,12 +150,61 @@ export async function emailForRecoverPassword(req, res) {
 
         console.log(savedToken)
 
-        await sendEmail(email, 'Reset password instructions', savedToken.urt_hash)   
-              
+        try {
+
+            await sendEmail(email, 'Reset password instructions', savedToken.urt_hash);
+
+        } catch (error) {
+
+            console.log(error)
+
+            console.log(error.code)
+            const code = error.code;
+            const responseCode = error.responseCode;
+
+            if (['EAI_AGAIN', 'ENOTFOUND', 'EDNS'].includes(code)) {
+                console.log(emailErrorHandler('DNS_LOOKUP_FAILED', error));
+            }
+            
+            if (code === 'ESOCKET') {
+                 console.log(emailErrorHandler('SMTP_TLS_ERROR', error));
+
+            }
+            
+            if (['ECONNREFUSED', 'EHOSTUNREACH', 'ECONNRESET'].includes(code)) {
+                emailErrorHandler('SMTP_CONNECTION_ERROR', error);
+
+            }
+            
+            if (code === 'ETIMEDOUT') {
+                emailErrorHandler('SMTP_TIMEOUT', error);
+            }
+            
+            if (code === 'EAUTH' || [535, 534].includes(responseCode)) {
+                emailErrorHandler('SMTP_AUTH_ERROR', error);
+            }
+            
+            if ([421, 450, 429].includes(responseCode)) {
+                emailErrorHandler('SMTP_RATE_LIMIT', error);
+            }
+            
+            if ([550, 551, 553].includes(responseCode)) {
+                emailErrorHandler('INVALID_RECIPIENT', error);
+            }
+            
+            if ([552, 554].includes(responseCode)) {
+                emailErrorHandler('EMAIL_REJECTED', error);
+            }
+            
+            if (code === 'ESOCKET') {
+                emailErrorHandler('SMTP_TLS_ERROR', error);
+            }
+        }
     }
 
     res.status(200).json(make_response(true, 200, "if the entered email is correct you'll receive an email with further instructions"))
 }
+
 
 export async function resetPassword(req, res){
     const {token, new_password} = req.body;
