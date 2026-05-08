@@ -390,7 +390,8 @@ paths:
             - *i_mortality* -- displays infant mortality in the country per year.
             - *d_rate* -- displays the dependency rate of the country per year.
             - *l_expectancy* -- displays life expectancy in years for each year.
-
+            
+            If not provided, all fields are returned.
           required: false
           schema:
             type: array
