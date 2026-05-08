@@ -23,7 +23,18 @@ info:
     **Base URL:** `https://moz-demog-api.vercel.app/v1`
     
 servers:
-  - url: https://moz-demog-api.vercel.app/v1
+  - url: /v1
+
+components:
+  securitySchemes:
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: API Key required for all endpoints
+
+security:
+  - ApiKeyHeader: []
 
 paths:
   /country:
@@ -84,7 +95,7 @@ paths:
                         head_of_state:
                           type: string
                           description: Name of the head of state
-                          example: Daniel Francisco Chapo
+                          example: Felipe Jacinto Nyusi
                         area:
                           type: number
                           description: Country's total area in km²
