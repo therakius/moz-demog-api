@@ -23,7 +23,8 @@ info:
     **Base URL:** `https://moz-demog-api.vercel.app/v1`
     
 servers:
-  - url: /v1
+  - url: https://moz-demog-api.vercel.app/v1
+    description: Production server
 
 components:
   securitySchemes:
