@@ -116,7 +116,7 @@ export function validateIndicatorsfields(req) {
       if (typeof fields == "string" || !Array.isArray(fields)) {
         throw new Error("fields must be an array of strings.");
       }
-      
+
     } catch (error) {
       return make_response(false, 400, message, {
         fields: "fields must be an array of strings.",
@@ -132,6 +132,11 @@ export function validateIndicatorsfields(req) {
     fields.forEach((f) => {
       if (!allowedFields.includes(f)) {
         Object.assign(errors, { fields: `field '${f}' is not allowed.` });
+        console.log(typeof f)
+      }
+
+      if (typeof f != "string") {
+        Object.assign(errors, { fields: "fields must be an array of strings." });
       }
 
       if (regex.test(f)) {
