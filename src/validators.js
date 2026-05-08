@@ -118,21 +118,9 @@ export function validateIndicatorsfields(req) {
       });
     }
 
-    if (fields.length === 0) {
-      return make_response(false, 400, message, {
-        fields: "fields must not be empty.",
-      });
-    }
-
     if (regexArray.test(fields)) {
       return make_response(false, 400, message, {
         fields: "fields must not contain special characters.",
-      });
-    }
-
-    if (fields.length === 0) {
-      return make_response(false, 400, message, {
-        fields: "please fill the array with the desired filters.",
       });
     }
 
