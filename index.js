@@ -133,6 +133,7 @@ app.get('/health', (req, res) => {
   const uptime = Math.floor((Date.now() - serverStartTime) / 1000);
   
   res.json({
+    code: 200,
     status: 'ok',
     uptime: uptime,
     timestamp: new Date().toISOString()
