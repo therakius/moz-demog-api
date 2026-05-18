@@ -51,6 +51,9 @@ const authLimiter = rateLimit ({
   }
 })
 
+// Track server startup time for uptime calculation
+const serverStartTime = Date.now();
+
 app.use(cors())
 app.use(morgan('dev'));
 app.use(express.json())
@@ -125,6 +128,16 @@ app.get('/v1/docs', (req, res) => {
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
+
+app.get('/health', (req, res) => {
+  const uptime = Math.floor((Date.now() - serverStartTime) / 1000);
+  
+  res.json({
+    status: 'ok',
+    uptime: uptime,
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Para desenvolvimento local
 if (process.env.NODE_ENV !== 'production') {
