@@ -61,7 +61,7 @@ export async function createUser(req, res){
 
     const emailExists = await executeSingleRow(emailExistQuery.query, emailExistQuery.values)
 
-    if (emailExists) return res.status(400).json(make_response(false, 400, "Email already in use", [], [], []))
+    if (emailExists) return res.status(400).json(make_response(false, 400, "username or email already in use", [], [], []))
     const passwdHash = hashPassword(password)
 
     let builtQuery = userQuery(username, email, passwdHash)
