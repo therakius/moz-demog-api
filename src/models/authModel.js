@@ -9,7 +9,7 @@ export function userQuery(username, email, user_password) {
 }
 
 export function getUserQuery(email) {
-
+    console.log(`email: ${email}`)
     const query = `select user_id, user_password_hash from use_user where user_email = $1`
     const values = [email]
     return {query, values}

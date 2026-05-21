@@ -48,7 +48,7 @@ async function authResponse (query, params = [], operationType) {
 export async function executeSingleRow(query, params) {
 
     const result = await db.query(query, params)
-    
+
     return result.rows[0] || false
 }
 
@@ -94,11 +94,11 @@ export async function generateKey(req, res) {
 
     const keyName = req.body.key_name;
     const user_email = req.body.email
-    const user_password = req.body.password
 
-    let userExists = await validateUser(user_email, user_password)
+    let userExists = await validateUser(user_email)
+    console.log(userExists)
 
-    if (!userExists.IsValid) return res.status(400).json(make_response(false, 400, 'invalid username or password', [], [], {}))
+    if (!userExists.userId) return res.status(404).json(make_response(false, 404, 'Account not found. Please create an account first.', [], [], {}))
 
     const key = keyGenerator("key")
     

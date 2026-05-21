@@ -285,18 +285,18 @@ export function validatePaginationInputs(page, per_page) {
 }
 
 
-export async function validateUser(email, password) {
+export async function validateUser(email) {
   try {
 
-    const builtQuery = getUserQuery(email, password)
+    const builtQuery = getUserQuery(email)
 
     const user = await executeSingleRow(builtQuery.query, builtQuery.values)
 
     if (!user) return false
 
-    const isValidHash = await comparePasswords(password, user.user_password_hash)
+    // const isValidHash = await comparePasswords(password, user.user_password_hash)
 
-    return {IsValid: isValidHash, userId: user.user_id}
+    return {userId: user.user_id}
   
   } catch (error) {
     console.log(error)
