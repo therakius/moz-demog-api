@@ -144,3 +144,5 @@ exercises.md
 #folders
 .vscodesteps.md
 testdb.js
+.vercel
+.env*.local
