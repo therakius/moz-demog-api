@@ -1,7 +1,8 @@
 import express from "express";
-import {getProvinceList} from "../controllers/provincesController.js";
+import {getProvinceList, getProvinces} from "../controllers/provincesController.js";
 
 const router = express.Router();
+router.get("/info", getProvinces)
 router.get("/", getProvinceList);
 
 export default router;

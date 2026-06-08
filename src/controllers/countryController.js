@@ -12,7 +12,10 @@ async function sendResponse(res, query, params = []) {
             return res.status(404).json(make_response(false, 200, "No records found", [], {}));
         }
 
-        const response = make_response(true, 200, "General country informations found successfully", [], rows[0]?.data)
+        let data = []
+        data.push(rows[0]?.data)
+
+        const response = make_response(true, 200, "General country informations found successfully", [], data)
 
         res.status(200).json(response)
     } catch (error) {

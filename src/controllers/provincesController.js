@@ -10,7 +10,7 @@ import { validateprovincesField, validatePaginationInputs } from "../validators.
 
 import { paginateResults } from "../paginator.js";
 
-async function sendResponse(res, query, params = [], paginated) {
+async function sendResponse(res, query, params = [], paginated, fType="") {
   try {
     const result = await db.query(query, params);
 
@@ -20,23 +20,67 @@ async function sendResponse(res, query, params = [], paginated) {
         .json(make_response(false, 404, "No records found."));
     }
 
-    let result_final = {};
+    if (fType === "list"){
 
-    result.rows.forEach((r) => {
-      result_final.provinces = r.data.provinces;
-    });
+      let listData = []
+      listData.push(result.rows[0].data)
+      return res.status(200).json(make_response(true, 200, "information found successfully LOL", [], listData))
+    } 
 
-    const data = result_final;
+    let finalData = []
 
-    res
-      .status(200)
-      .json(
-        make_response(true, 200, "information found successfuly", [], data, paginated)
-      );
+    result.rows.forEach((r)=>{
+        finalData.push(r.data)
+    })
+
+    return res.status(200).json(make_response(true, 200, "information found sucessfully", [], finalData.flat(), paginated))
+  
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ error: "Internal server error" });
   }
+}
+
+export async function getProvinces(req, res) {
+
+    let { page, per_page } = req.query;
+  
+    const validPaginateParams = validatePaginationInputs(page, per_page)
+  
+    if (validPaginateParams) {
+      return res.status(400).json(validPaginateParams)
+    } 
+
+  const isValid = await validateprovincesField(req);
+
+  if (isValid) {
+    return res.status(400).json(isValid);
+  }
+
+  page = parseInt(page);
+  per_page = parseInt(per_page);
+
+  if(!page || page < 1) page = 1;
+
+  if(!per_page || per_page < 1) per_page = 5;
+
+  const offset = (page - 1) * per_page;
+
+  const {pQueryCount, pQueryParams} =  getProvinceCountQuery(req)
+
+  const totalCount = await countProvinceRecords(pQueryCount, pQueryParams)
+
+  if (totalCount === "error"){
+
+    return res.status(500).json(make_response(false, 500, "There was an internal server error.", {}, {}))
+  }
+
+  const paginated = paginateResults(page, per_page, totalCount)
+
+  const { query, params } = getProvinceQuery(req.query, per_page, offset);
+
+  sendResponse(res, query, params, paginated);
+
 }
 
 
@@ -53,7 +97,7 @@ async function countProvinceRecords(query, params){
 export function getProvinceList(req, res) {
   const query = getProvinceListQuery();
 
-  sendResponse(res, query);
+  sendResponse(res, query, [], [], "list");
 }
 
 export function provincesQuery(province) {

@@ -1,5 +1,5 @@
 export function getProvinceQuery(requestQuery, per_page, offset) {
-  let p_name = requestQuery.p_name;
+  let p_name = requestQuery.name;
   let whereClause = "";
 
   let params = [];
@@ -7,16 +7,18 @@ export function getProvinceQuery(requestQuery, per_page, offset) {
   let paramIndex = 1
 
   let query = `
-        select json_build_object(
-        'year', y.year,
-        'province_name', p.province_name,
-        'population_density', p.population_density,
-        'area_in_sqkm', p.area_in_sqkm,
-        'data_state', y.data_state
-        ) as data
-        from provinces p
-        inner join year y on y.id = p.year_id
-        where 1 = 1   
+      select json_agg(
+          json_build_object(
+              'year', y.year,
+              'province_name', p.province_name,
+              'population_density', p.population_density,
+              'area_in_sqkm', p.area_in_sqkm,
+              'data_state', y.data_state
+          )
+      ) as data
+      from provinces p
+      inner join year y on y.id = p.year_id
+      where 1 = 1
     `;
 
   if (p_name) {
@@ -29,14 +31,14 @@ export function getProvinceQuery(requestQuery, per_page, offset) {
   }
 
   params.push(per_page, offset)
-  query+=` order by p.id desc limit $${params.length -1} offset $${params.length}`;
+  query+=`  group by p.id  order by p.id desc limit $${params.length -1} offset $${params.length}`;
 
   return { query: query, params: params };
 }
 
 
 export function getProvinceCountQuery(req){
-  const p_name = req.query.p_name;
+  const p_name = req.query.name;
 
   let pQueryCount = `
     SELECT
