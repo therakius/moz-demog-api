@@ -39,47 +39,6 @@ async function sendResponse(res, query, params = [], paginated) {
   }
 }
 
-// export async function getProvinces(req, res) {
-
-//     let { page, per_page } = req.query;
-  
-//     const validPaginateParams = validatePaginationInputs(page, per_page)
-  
-//     if (validPaginateParams) {
-//       return res.status(400).json(validPaginateParams)
-//     } 
-
-//   const isValid = await validateprovincesField(req);
-
-//   if (isValid) {
-//     return res.status(400).json(isValid);
-//   }
-
-//   page = parseInt(page);
-//   per_page = parseInt(per_page);
-
-//   if(!page || page < 1) page = 1;
-
-//   if(!per_page || per_page < 1) per_page = 5;
-
-//   const offset = (page - 1) * per_page;
-
-//   const {pQueryCount, pQueryParams} =  getProvinceCountQuery(req)
-
-//   const totalCount = await countProvinceRecords(pQueryCount, pQueryParams)
-
-//   if (totalCount === "error"){
-
-//     return res.status(500).json(make_response(false, 500, "There was an internal server error.", {}, {}))
-//   }
-
-//   const paginated = paginateResults(page, per_page, totalCount)
-
-//   const { query, params } = getProvinceQuery(req.query, per_page, offset);
-
-//   sendResponse(res, query, params, paginated);
-// }
-
 
 async function countProvinceRecords(query, params){
   try {
