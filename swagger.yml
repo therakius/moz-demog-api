@@ -587,7 +587,7 @@ paths:
                   data:
                     type: array
                     example: []
-  /province-info:
+  /provinces:
     get:
       tags:
         - Endpoints
