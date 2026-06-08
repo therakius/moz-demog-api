@@ -98,7 +98,7 @@ app.set('trust proxy', 1);
 app.use("/v1/country", requireApiKey, countryRoutes)
 app.use("/v1/population", requireApiKey, populationRoutes)
 app.use("/v1/indicators", requireApiKey, indicatorRoutes)
-app.use("/v1/province-info", requireApiKey, provincesRoutes)
+app.use("/v1/provinces", requireApiKey, provincesRoutes)
 app.use("/auth", authLimiter, authRoutes)
 
 import { readFileSync } from 'fs';
