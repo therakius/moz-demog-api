@@ -142,7 +142,7 @@ app.get('/health', (req, res) => {
 
 // Para desenvolvimento local
 if (process.env.NODE_ENV !== 'production') {
-  const port = 3000;
+  const port = process.env.APP_PORT || 8080;
   app.listen(port, () => {
     console.log(`listening on port ${port}`)
   })
