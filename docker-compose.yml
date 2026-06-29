@@ -1,8 +1,6 @@
 services:
-  moz-demog-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  demographics-api:
+    build: .
     ports:
       - "8080:8080"
     env_file:
